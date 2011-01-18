@@ -42,6 +42,13 @@ void testApp::setup(){
 	playing				= false;
 
 	
+	UInt32 session = kAudioSessionCategory_PlayAndRecord;
+	AudioSessionSetProperty (		
+							 kAudioSessionProperty_AudioCategory,
+							 sizeof (session),
+							 &session
+							 );
+	
 	// 0 output channels,
 	// 1 input channels
 	// 44100 samples per second
@@ -51,11 +58,12 @@ void testApp::setup(){
 	ofSetFrameRate(60);
 
 	// make it come out the loud speaker 
-	UInt32 audioRouteOverride = 'spkr'; 
-	AudioSessionSetProperty (		
-							 'ovrd',
-							 sizeof (audioRouteOverride),
-							 &audioRouteOverride         
+	UInt32 doChangeDefaultRoute = 1;
+	
+	AudioSessionSetProperty (
+							 kAudioSessionProperty_OverrideCategoryDefaultToSpeaker,
+							 sizeof (doChangeDefaultRoute),
+							 &doChangeDefaultRoute
 							 );
 	
 	

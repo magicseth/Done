@@ -1,4 +1,5 @@
 #include "testApp.h"
+#import <AudioToolbox/AudioToolbox.h>
 #define LENGTH_OF_CIRCULAR_BUFFER 3
 
 //--------------------------------------------------------------

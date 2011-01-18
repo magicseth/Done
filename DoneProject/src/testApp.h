@@ -21,6 +21,14 @@ public:
 	void gotFocus();
 	void gotMemoryWarning();
 	void deviceOrientationChanged(int newOrientation);
+	
+	void audioReceived( float * input, int bufferSize, int nChannels );
+	
+	int		initialBufferSize;
+	int		sampleRate;
+	int		drawCounter, bufferCounter;
+	float 	* buffer;
+	
 
 };
 

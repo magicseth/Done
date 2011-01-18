@@ -3,6 +3,8 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){	
+	
+	
 	// register touch events
 	ofRegisterTouchEvents(this);
 	
@@ -46,6 +48,15 @@ void testApp::setup(){
 	// 4 num buffers (latency)
 	ofSoundStreamSetup(1, 1, this, sampleRate, initialBufferSize, 4);
 	ofSetFrameRate(60);
+
+	// make it come out the loud speaker 
+	UInt32 audioRouteOverride = 'spkr'; 
+	AudioSessionSetProperty (		
+							 'ovrd',
+							 sizeof (audioRouteOverride),
+							 &audioRouteOverride         
+							 );
+	
 	
 }
 

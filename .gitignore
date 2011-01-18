@@ -1,0 +1,29 @@
+# xcode noise
+build/*
+DoneProject/build/*
+core/build/*
+core/gen_protos/*
+BumpIDManager/build/*
+*.pbxuser
+*.mode1v3
+*.perspectivev3
+*.xcuserdatad
+
+# old skool
+.svn
+
+# osx noise
+.DS_Store
+profile
+
+#protobuf noise
+*.pb.h
+*.pb.m
+
+#ignore local debug settings
+my_debug.plist
+
+#ignore other build folders
+demo_projects/*/build/*
+bp_build_info.plist
+cleanup

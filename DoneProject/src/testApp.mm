@@ -1,6 +1,8 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define LENGTH_OF_CIRCULAR_BUFFER 3
+#define LENGTH_OF_CIRCULAR_BUFFER 3 // in seconds
+#define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
+#define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
 //--------------------------------------------------------------
 void testApp::setup(){	
@@ -35,6 +37,7 @@ void testApp::setup(){
 	// beginning;
 	circBufferSize		= sampleRate*LENGTH_OF_CIRCULAR_BUFFER;
 	circularBuffer		= new float[circBufferSize];
+	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 	
 	playbackhead		= 0;
@@ -118,6 +121,24 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 	
 }
 
+void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+	float f;
+	int indexBegin;
+	int indexEnd;
+	for (int i = 0; i < rampLength; i++) {
+		indexBegin = (i+startingPoint)%bufferLength;
+		indexEnd = (startingPoint+soundLength-CLICK_REMOVAL-i)%bufferLength;
+		f=(float) i; // need to do a percentage calculation, but i'm not sure if this is necessary just a precaution
+		soundToFade[indexBegin] = soundToFade[indexBegin]*(f/rampLength); // fade in
+		soundToFade[indexEnd] = soundToFade[indexEnd]*(f/rampLength); // fade out
+	}	
+	for (int i = 0; i < CLICK_REMOVAL; i++) {
+		indexEnd = (startingPoint+soundLength-i)%bufferLength;
+		soundToFade[indexEnd] = 0; // fade out
+	}	
+	
+}
+
 void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 	if (playing) {
 		for (int i = 0; i < bufferSize; i++) {
@@ -141,6 +162,19 @@ void testApp::exit(){
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	playing = true;
+	playbackhead=writehead;
+	int sampleLength;
+	if (bufferCounter*initialBufferSize>LENGTH_OF_CIRCULAR_BUFFER*sampleRate) {
+		sampleLength=LENGTH_OF_CIRCULAR_BUFFER*sampleRate;
+	}
+	else {
+		sampleLength= bufferCounter * initialBufferSize;
+	}
+	cout << sampleLength;
+	
+	fadeAudio(circularBuffer, sampleLength, LENGTH_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
+	bufferCounter=0;
+
 }
 
 //--------------------------------------------------------------

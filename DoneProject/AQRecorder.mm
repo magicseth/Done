@@ -48,6 +48,8 @@
  */
 
 #include "AQRecorder.h"
+#define kBufferDurationSeconds .5
+
 
 // ____________________________________________________________________________________
 // Determine the size, in bytes, of a buffer necessary to represent the supplied number
@@ -107,6 +109,26 @@ void AQRecorder::MyInputBufferHandler(	void *								inUserData,
 		// if we're not stopping, re-enqueue the buffe so that it gets filled again
 		if (aqr->IsRunning())
 			XThrowIfError(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, NULL), "AudioQueueEnqueueBuffer failed");
+	} catch (CAXException e) {
+		char buf[256];
+		fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
+	}
+}
+
+void AQRecorder::SaveSamples(UInt32 numSamples, float *buffer)
+{
+	try {
+		if (numSamples > 0) {
+			// write packets to file
+
+			XThrowIfError(AudioFileWritePackets(
+												this->mRecordFile, 
+												FALSE,
+												numSamples * sizeof(float),
+												NULL, this->mRecordPacket, &numSamples, buffer),
+						  "AudioFileWritePackets failed");
+			this->mRecordPacket += numSamples;
+		}
 	} catch (CAXException e) {
 		char buf[256];
 		fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
@@ -214,6 +236,7 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		// create the audio file
 		XThrowIfError(AudioFileCreateWithURL(url, kAudioFileCAFType, &mRecordFormat, kAudioFileFlags_EraseFile,
 											 &mRecordFile), "AudioFileCreateWithURL failed");
+		NSLog(@"The url is %@", url);
 		CFRelease(url);
 		
 		// copy the cookie first to give the file object as much info as we can about the data going in
@@ -230,7 +253,7 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		}
 		// start the queue
 		mIsRunning = true;
-		XThrowIfError(AudioQueueStart(mQueue, NULL), "AudioQueueStart failed");
+//		XThrowIfError(AudioQueueStart(mQueue, NULL), "AudioQueueStart failed");
 	}
 	catch (CAXException &e) {
 		char buf[256];

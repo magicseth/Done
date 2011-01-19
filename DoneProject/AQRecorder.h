@@ -70,7 +70,8 @@ public:
 	void			StartRecord(CFStringRef inRecordFile);
 	void			StopRecord();		
 	Boolean			IsRunning() const			{ return mIsRunning; }
-	
+	void SaveSamples(UInt32 numSamples, float *buffer);
+
 	UInt64			startTime;
 	
 private:

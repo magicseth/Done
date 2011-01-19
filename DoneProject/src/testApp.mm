@@ -70,6 +70,9 @@ void testApp::setup(){
 							 &doChangeDefaultRoute
 							 );
 	
+	recorder = new AQRecorder();
+
+	recorder->StartRecord(CFSTR("recordedFile.caf"));
 	
 }
 
@@ -163,6 +166,8 @@ void testApp::exit(){
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	playing = true;
+
+	
 	playbackhead=writehead;
 	int sampleLength;
 	if (bufferCounter*initialBufferSize>LENGTH_OF_CIRCULAR_BUFFER*sampleRate) {
@@ -171,11 +176,12 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	else {
 		sampleLength= bufferCounter * initialBufferSize;
 	}
-	cout << sampleLength;
 	
 	fadeAudio(circularBuffer, sampleLength, LENGTH_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
 	bufferCounter=0;
 
+	recorder->SaveSamples(circBufferSize, circularBuffer);
+	recorder->StopRecord();	
 }
 
 //--------------------------------------------------------------

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
+#import "AQRecorder.h"
 
 class testApp : public ofxiPhoneApp {
 	
@@ -40,6 +41,7 @@ public:
 	int		writehead;
 	bool	playing;
 	int		soundLength;
+	AQRecorder * recorder;
 
 };
 

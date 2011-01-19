@@ -269,7 +269,7 @@ void AQRecorder::StopRecord()
 {
 	// end recording
 	mIsRunning = false;
-	XThrowIfError(AudioQueueStop(mQueue, true), "AudioQueueStop failed");	
+//	XThrowIfError(AudioQueueStop(mQueue, true), "AudioQueueStop failed");	
 	// a codec may update its cookie at the end of an encoding session, so reapply it to the file now
 	CopyEncoderCookieToFile();
 	if (mFileName)
@@ -277,6 +277,6 @@ void AQRecorder::StopRecord()
 		CFRelease(mFileName);
 		mFileName = NULL;
 	}
-	AudioQueueDispose(mQueue, true);
+//	AudioQueueDispose(mQueue, true);
 	AudioFileClose(mRecordFile);
 }

@@ -4,6 +4,7 @@
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
+#define NUM_CHANNELS 1
 //--------------------------------------------------------------
 void testApp::setup(){	
 	
@@ -57,7 +58,7 @@ void testApp::setup(){
 	// 44100 samples per second
 	// 512 samples per buffer
 	// 4 num buffers (latency)
-	ofSoundStreamSetup(1, 1, this, sampleRate, initialBufferSize, 4);
+	ofSoundStreamSetup(NUM_CHANNELS, NUM_CHANNELS, this, sampleRate, initialBufferSize, 4);
 	ofSetFrameRate(60);
 
 	// make it come out the loud speaker 

@@ -1,6 +1,6 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define LENGTH_OF_CIRCULAR_BUFFER 3 // in seconds
+#define DURATION_OF_CIRCULAR_BUFFER 3 // in seconds
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
@@ -36,7 +36,7 @@ void testApp::setup(){
 
 	// Allocate a buffer that we will put three seconds of sound into, we will fill it, and then move back to the
 	// beginning;
-	circBufferSize		= sampleRate*LENGTH_OF_CIRCULAR_BUFFER;
+	circBufferSize		= sampleRate*DURATION_OF_CIRCULAR_BUFFER;
 	circularBuffer		= new float[circBufferSize];
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
@@ -170,14 +170,14 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	playbackhead=writehead;
 	int sampleLength;
-	if (bufferCounter*initialBufferSize>LENGTH_OF_CIRCULAR_BUFFER*sampleRate) {
-		sampleLength=LENGTH_OF_CIRCULAR_BUFFER*sampleRate;
+	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
+		sampleLength=DURATION_OF_CIRCULAR_BUFFER*sampleRate;
 	}
 	else {
 		sampleLength= bufferCounter * initialBufferSize;
 	}
 	
-	fadeAudio(circularBuffer, sampleLength, LENGTH_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
+	fadeAudio(circularBuffer, sampleLength, DURATION_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
 	bufferCounter=0;
 
 	recorder->SaveSamples(circBufferSize, circularBuffer);

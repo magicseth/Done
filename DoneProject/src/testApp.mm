@@ -98,7 +98,7 @@ void testApp::draw(){
 //		ofLine(300);
 		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
 		{
-			ave+=abs(circularBuffer[circIndex+j]);
+			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
 		}		
 		ave=ave / (initialBufferSize / aveSampleSkip);
 		ofLine(theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200,theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200+ave*1000.0f);
@@ -194,12 +194,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	short int *  newBuffer = new short int[DURATION_OF_CIRCULAR_BUFFER * sampleRate *2];
 	for (int i = 0; i < circBufferSize; i++) {
-		newBuffer[i*2] = circularBuffer[i] * 32000;
-		newBuffer[i*2 +1] = circularBuffer[i] * 32000;
-		
-//		float v = circularBuffer[i];
-//		NSLog(@"%f", v);
-//		circularBuffer[i] = circularBuffer[i];
+		newBuffer[i*2] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
+		newBuffer[i*2 +1] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
 	}
 	
 //	recorder->SaveSamples(circBufferSize, circularBuffer);

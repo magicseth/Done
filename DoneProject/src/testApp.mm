@@ -1,6 +1,6 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
+#define DURATION_OF_CIRCULAR_BUFFER 5 // in seconds
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
@@ -91,8 +91,8 @@ void testApp::draw(){
 	int circIndex;
 	int theEnd=300;
 	float ave;
-	int aveSampleSkip=1;
-	for (int i = 0; i < circBufferSize; i=i+512){
+	int aveSampleSkip=32*(DURATION_OF_CIRCULAR_BUFFER/3);
+	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(DURATION_OF_CIRCULAR_BUFFER/3)){
 		ave=0;
 		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
 //		ofLine(300);
@@ -101,8 +101,8 @@ void testApp::draw(){
 			ave+=abs(circularBuffer[circIndex+j]);
 		}		
 		ave=ave / (initialBufferSize / aveSampleSkip);
-		ofLine(theEnd-(i/initialBufferSize)/10,200,theEnd-(i/initialBufferSize)/10,200+ave*1000.0f);
-		ofLine(theEnd-(i/initialBufferSize)/10,200,theEnd-(i/initialBufferSize)/10,200-ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200,theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200+ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200,theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200-ave*1000.0f);
 
 	}
 	

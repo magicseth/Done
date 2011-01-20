@@ -192,10 +192,9 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	fadeAudio(circularBuffer, sampleLength, DURATION_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
 	bufferCounter=0;
 	
-	short int *  newBuffer = new short int[DURATION_OF_CIRCULAR_BUFFER * sampleRate *2];
+	short int *  newBuffer = new short int[DURATION_OF_CIRCULAR_BUFFER * sampleRate];
 	for (int i = 0; i < circBufferSize; i++) {
-		newBuffer[i*2] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
-		newBuffer[i*2 +1] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
+		newBuffer[i] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
 	}
 	
 //	recorder->SaveSamples(circBufferSize, circularBuffer);

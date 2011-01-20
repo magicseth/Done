@@ -190,6 +190,7 @@ void AQRecorder::SetupAudioFormat(UInt32 inFormatID)
 										  &size, 
 										  &mRecordFormat.mChannelsPerFrame), "couldn't get input channel count");
 	
+	mRecordFormat.mChannelsPerFrame = 1;// Force Mono
 	mRecordFormat.mFormatID = inFormatID;
 	if (inFormatID == kAudioFormatLinearPCM)
 	{

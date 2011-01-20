@@ -82,11 +82,11 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 	
-	ofTranslate(0, -50, 0);
+	ofTranslate(0, 0, 0);
 	
 	// draw the input:
 	ofSetColor(0x333333);
-	ofRect(70,100,256,200);
+	ofRect(0,0,360,480);
 	ofSetColor(0xFFFFFF);
 	int circIndex;
 	int theEnd=300;
@@ -101,8 +101,8 @@ void testApp::draw(){
 			ave+=abs(circularBuffer[circIndex+j]);
 		}		
 		ave=ave / (initialBufferSize / aveSampleSkip);
-		ofLine(theEnd-i/initialBufferSize,200,theEnd-i/initialBufferSize,200+ave*1000.0f);
-		ofLine(theEnd-i/initialBufferSize,200,theEnd-i/initialBufferSize,200-ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/10,200,theEnd-(i/initialBufferSize)/10,200+ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/10,200,theEnd-(i/initialBufferSize)/10,200-ave*1000.0f);
 
 	}
 	
@@ -110,7 +110,7 @@ void testApp::draw(){
 	drawCounter++;
 	char reportString[255];
 	sprintf(reportString, "buffers received: %i\ndraw routines called: %i\n", bufferCounter,drawCounter);
-	ofDrawBitmapString(reportString, 70,308);
+	//ofDrawBitmapString(reportString, 70,308);
 	
 	
 }

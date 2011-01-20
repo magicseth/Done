@@ -1,6 +1,6 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define DURATION_OF_CIRCULAR_BUFFER 3 // in seconds
+#define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
@@ -88,8 +88,22 @@ void testApp::draw(){
 	ofSetColor(0x333333);
 	ofRect(70,100,256,200);
 	ofSetColor(0xFFFFFF);
-	for (int i = 0; i < initialBufferSize; i++){
-		ofLine(70+i,200,70+i,200+buffer[i]*100.0f);
+	int circIndex;
+	int theEnd=300;
+	float ave;
+	int aveSampleSkip=1;
+	for (int i = 0; i < circBufferSize; i=i+512){
+		ave=0;
+		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
+//		ofLine(300);
+		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
+		{
+			ave+=abs(circularBuffer[circIndex+j]);
+		}		
+		ave=ave / (initialBufferSize / aveSampleSkip);
+		ofLine(theEnd-i/initialBufferSize,200,theEnd-i/initialBufferSize,200+ave*1000.0f);
+		ofLine(theEnd-i/initialBufferSize,200,theEnd-i/initialBufferSize,200-ave*1000.0f);
+
 	}
 	
 	ofSetColor(0x333333);

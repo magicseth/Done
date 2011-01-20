@@ -72,8 +72,6 @@ void testApp::setup(){
 	
 	recorder = new AQRecorder();
 
-	recorder->StartRecord(CFSTR("recordedFile.caf"));
-	
 }
 
 //--------------------------------------------------------------
@@ -191,6 +189,11 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	}
 	
 //	recorder->SaveSamples(circBufferSize, circularBuffer);
+	
+	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
+	NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+	recorder->StartRecord((CFStringRef)dateString);
 	recorder->SaveSamples(DURATION_OF_CIRCULAR_BUFFER * sampleRate, newBuffer);
 	recorder->StopRecord();	
 }

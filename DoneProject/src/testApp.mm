@@ -206,7 +206,7 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-	NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
 	recorder->StartRecord((CFStringRef)dateString);
 	recorder->SaveSamples(DURATION_OF_CIRCULAR_BUFFER * sampleRate, newBuffer);
 	recorder->StopRecord();	

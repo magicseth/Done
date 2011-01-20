@@ -229,7 +229,10 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		XThrowIfError(AudioQueueGetProperty(mQueue, kAudioQueueProperty_StreamDescription,	
 											&mRecordFormat, &size), "couldn't get queue's format");
 		
-		NSString *recordFile = [NSTemporaryDirectory() stringByAppendingPathComponent: (NSString*)inRecordFile];	
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+		NSString *documentsDirectory = [paths objectAtIndex:0];
+
+		NSString *recordFile = [documentsDirectory stringByAppendingPathComponent: (NSString*)inRecordFile];	
 		
 		url = CFURLCreateWithString(kCFAllocatorDefault, (CFStringRef)recordFile, NULL);
 		

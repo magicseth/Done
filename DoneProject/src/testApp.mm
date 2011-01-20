@@ -179,8 +179,19 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	fadeAudio(circularBuffer, sampleLength, DURATION_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
 	bufferCounter=0;
-
-	recorder->SaveSamples(circBufferSize, circularBuffer);
+	
+	short int *  newBuffer = new short int[DURATION_OF_CIRCULAR_BUFFER * sampleRate *2];
+	for (int i = 0; i < circBufferSize; i++) {
+		newBuffer[i*2] = circularBuffer[i] * 32000;
+		newBuffer[i*2 +1] = circularBuffer[i] * 32000;
+		
+//		float v = circularBuffer[i];
+//		NSLog(@"%f", v);
+//		circularBuffer[i] = circularBuffer[i];
+	}
+	
+//	recorder->SaveSamples(circBufferSize, circularBuffer);
+	recorder->SaveSamples(DURATION_OF_CIRCULAR_BUFFER * sampleRate, newBuffer);
 	recorder->StopRecord();	
 }
 

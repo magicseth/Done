@@ -115,7 +115,7 @@ void AQRecorder::MyInputBufferHandler(	void *								inUserData,
 	}
 }
 
-void AQRecorder::SaveSamples(UInt32 numSamples, float *buffer)
+void AQRecorder::SaveSamples(UInt32 numSamples, short int *buffer)
 {
 	try {
 		if (numSamples > 0) {

@@ -46,6 +46,7 @@ void testApp::setup(){
 	playbackhead		= 0;
 	writehead			= 0;
 	playing				= false;
+	playingOldSound		= false;
 
 	
 	UInt32 session = kAudioSessionCategory_PlayAndRecord;
@@ -62,6 +63,14 @@ void testApp::setup(){
 	// 4 num buffers (latency)
 	ofSoundStreamSetup(NUM_CHANNELS, NUM_CHANNELS, this, sampleRate, initialBufferSize, 4);
 	ofSetFrameRate(60);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+
+	allThingsPath = [[documentsDirectory stringByAppendingPathComponent:@"allThings.dict"] retain];
+	allThings = [[NSArray arrayWithContentsOfFile:allThingsPath] mutableCopy];
+	if (!allThings) {
+		allThings = [[NSMutableArray alloc] init];
+	}
 
 	// make it come out the loud speaker 
 	UInt32 doChangeDefaultRoute = 1;
@@ -107,6 +116,15 @@ void testApp::draw(){
 		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200-ave*1000.0f);
 
 	}
+	
+	for (NSDictionary * star in allThings) {
+		float x = [[star objectForKey:@"x"] floatValue];
+		float y = [[star objectForKey:@"y"] floatValue];
+		ofLine(x+10,y,x-10,y);
+		ofLine(x,y+10,x,y-10);
+
+	}
+	
 	
 	ofSetColor(0x333333);
 	drawCounter++;
@@ -179,6 +197,8 @@ void testApp::exit(){
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
+	
+	
 	playing = true;
 
 	int endingPoint = writehead;
@@ -191,31 +211,20 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	}
 	
 	bufferCounter=0;
-	
-	// First, straighten out the circular buffer:
-	int straightBufferSize = recordingDuration * sampleRate;
-	short int *  straightBuffer = new short int[straightBufferSize];
-	for (int i = 0; i < straightBufferSize; i++) {
-		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+
+	for (NSDictionary * star in allThings) {
+		float x = [[star objectForKey:@"x"] floatValue];
+		float y = [[star objectForKey:@"y"] floatValue];
+		if (x - 10 < touch.x  && x +10 > touch.x && y -10 < touch.y && y + 10 > touch.y ) {
+			//we have a star touched.
+			playingOldSound = true;
+			playing = false;
+		}
+		ofLine(x+10,y,x-10,y);
+		ofLine(x,y+10,x,y-10);
+		
 	}
 	
-	playbackhead=writehead - straightBufferSize;
-
-	// Then fade the beginning and end:
-	
-//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
-
-	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
-
-	
-//	recorder->SaveSamples(circBufferSize, circularBuffer);
-	
-	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
-	recorder->StartRecord((CFStringRef)dateString);
-	recorder->SaveSamples(straightBufferSize, straightBuffer);
-	recorder->StopRecord();	
 }
 
 //--------------------------------------------------------------
@@ -231,6 +240,42 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
+	playingOldSound = false;
+	// First, straighten out the circular buffer:
+	int endingPoint = writehead;
+
+	int straightBufferSize = recordingDuration * sampleRate;
+	short int *  straightBuffer = new short int[straightBufferSize];
+	for (int i = 0; i < straightBufferSize; i++) {
+		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+	}
+	
+	playbackhead=writehead - straightBufferSize;
+	
+	// Then fade the beginning and end:
+	
+	//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+	
+	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
+	
+	
+	//	recorder->SaveSamples(circBufferSize, circularBuffer);
+	
+	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
+	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
+	recorder->StartRecord((CFStringRef)dateString);
+	recorder->SaveSamples(straightBufferSize, straightBuffer);
+	recorder->StopRecord();	
+	
+	NSDictionary * thisStar = [NSDictionary dictionaryWithObjectsAndKeys:
+							   [NSNumber numberWithFloat:touch.x], @"x",
+							   [NSNumber numberWithFloat:touch.y], @"y",
+							   dateString, @"filename", nil
+							   ];
+	[allThings addObject:thisStar];
+	[allThings writeToFile:allThingsPath atomically:YES];
+	
 	playing = false;
 }
 

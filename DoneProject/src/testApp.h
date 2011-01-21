@@ -44,6 +44,10 @@ public:
 	
 	int		recordingDuration;
 	AQRecorder * recorder;
+	NSString * allThingsPath;
+	NSMutableArray *allThings;
+	
+	bool playingOldSound;
 
 };
 

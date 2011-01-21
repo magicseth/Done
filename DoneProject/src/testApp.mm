@@ -1,6 +1,6 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define DURATION_OF_CIRCULAR_BUFFER 5 // in seconds
+#define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 
@@ -40,6 +40,8 @@ void testApp::setup(){
 	circularBuffer		= new float[circBufferSize];
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
+
+	recordingDuration	= 10;
 	
 	playbackhead		= 0;
 	writehead			= 0;
@@ -91,8 +93,8 @@ void testApp::draw(){
 	int circIndex;
 	int theEnd=300;
 	float ave;
-	int aveSampleSkip=32*(DURATION_OF_CIRCULAR_BUFFER/3);
-	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(DURATION_OF_CIRCULAR_BUFFER/3)){
+	int aveSampleSkip=32*(recordingDuration/3);
+	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(recordingDuration/3)){
 		ave=0;
 		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
 //		ofLine(300);
@@ -101,8 +103,8 @@ void testApp::draw(){
 			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
 		}		
 		ave=ave / (initialBufferSize / aveSampleSkip);
-		ofLine(theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200,theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200+ave*1000.0f);
-		ofLine(theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200,theEnd-(i/initialBufferSize)/(DURATION_OF_CIRCULAR_BUFFER/3.0f),200-ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200+ave*1000.0f);
+		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200-ave*1000.0f);
 
 	}
 	
@@ -137,7 +139,7 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 	
 }
 
-void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+void testApp::fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
 	float f;
 	int indexBegin;
 	int indexEnd;
@@ -179,7 +181,7 @@ void testApp::exit(){
 void testApp::touchDown(ofTouchEventArgs &touch){
 	playing = true;
 
-	
+	int endingPoint = writehead;
 	playbackhead=writehead;
 	int sampleLength;
 	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
@@ -189,13 +191,21 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 		sampleLength= bufferCounter * initialBufferSize;
 	}
 	
-	fadeAudio(circularBuffer, sampleLength, DURATION_OF_CIRCULAR_BUFFER*sampleRate, SAMPLES_TO_FADE, playbackhead);
 	bufferCounter=0;
 	
-	short int *  newBuffer = new short int[DURATION_OF_CIRCULAR_BUFFER * sampleRate];
-	for (int i = 0; i < circBufferSize; i++) {
-		newBuffer[i] = circularBuffer[((i+writehead)%circBufferSize)] * 32000;
+	// First, straighten out the circular buffer:
+	int straightBufferSize = recordingDuration * sampleRate;
+	short int *  straightBuffer = new short int[straightBufferSize];
+	for (int i = 0; i < straightBufferSize; i++) {
+		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
 	}
+	
+	// Then fade the beginning and end:
+	
+//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+
+	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
+
 	
 //	recorder->SaveSamples(circBufferSize, circularBuffer);
 	
@@ -203,7 +213,7 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
 	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
 	recorder->StartRecord((CFStringRef)dateString);
-	recorder->SaveSamples(DURATION_OF_CIRCULAR_BUFFER * sampleRate, newBuffer);
+	recorder->SaveSamples(straightBufferSize, straightBuffer);
 	recorder->StopRecord();	
 }
 

@@ -26,7 +26,7 @@ public:
 	void audioReceived( float * input, int bufferSize, int nChannels );
 	void audioRequested(float * output, int bufferSize, int nChannels);
 
-	void fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
+	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
 
 	
 	int		initialBufferSize;
@@ -41,6 +41,8 @@ public:
 	int		writehead;
 	bool	playing;
 	int		soundLength;
+	
+	int		recordingDuration;
 	AQRecorder * recorder;
 
 };

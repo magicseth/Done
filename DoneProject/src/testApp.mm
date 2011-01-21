@@ -160,7 +160,7 @@ void testApp::fadeAudio(short * soundToFade, int soundLength, int bufferLength, 
 void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 	if (playing) {
 		for (int i = 0; i < bufferSize; i++) {
-			output[i] = circularBuffer[playbackhead];
+			output[i] = circularBuffer[playbackhead% circBufferSize];
 			playbackhead++;
 			playbackhead = playbackhead % circBufferSize;
 		}
@@ -220,7 +220,13 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs &touch){
-
+	float ratio = (touch.x)/320;
+	recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
+	recordingDuration = MIN(DURATION_OF_CIRCULAR_BUFFER, recordingDuration);
+	int straightBufferSize = recordingDuration * sampleRate;
+	
+	playbackhead=writehead - straightBufferSize;
+	
 }
 
 //--------------------------------------------------------------

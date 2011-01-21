@@ -160,7 +160,7 @@ void testApp::fadeAudio(short * soundToFade, int soundLength, int bufferLength, 
 void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 	if (playing) {
 		for (int i = 0; i < bufferSize; i++) {
-			output[i] = circularBuffer[playbackhead];
+			output[i] = circularBuffer[playbackhead% circBufferSize];
 			playbackhead++;
 			playbackhead = playbackhead % circBufferSize;
 		}

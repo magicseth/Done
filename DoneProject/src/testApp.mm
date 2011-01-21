@@ -182,7 +182,6 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	playing = true;
 
 	int endingPoint = writehead;
-	playbackhead=writehead;
 	int sampleLength;
 	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
 		sampleLength=DURATION_OF_CIRCULAR_BUFFER*sampleRate;
@@ -200,6 +199,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
 	}
 	
+	playbackhead=writehead - straightBufferSize;
+
 	// Then fade the beginning and end:
 	
 //	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){

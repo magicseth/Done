@@ -3,6 +3,7 @@
 #define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
+#import "AQPlayer.h"
 
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
@@ -122,6 +123,8 @@ void testApp::draw(){
 		float y = [[star objectForKey:@"y"] floatValue];
 		ofLine(x+10,y,x-10,y);
 		ofLine(x,y+10,x,y-10);
+		ofLine(x+10,y-10,x-10,y+10);
+		ofLine(x+10,y+10,x-10,y-10);
 
 	}
 	
@@ -220,8 +223,17 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			playingOldSound = true;
 			playing = false;
 		}
-		ofLine(x+10,y,x-10,y);
-		ofLine(x,y+10,x,y-10);
+		AQPlayer * p = new AQPlayer;
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+		NSString *documentsDirectory = [paths objectAtIndex:0];
+		
+		NSString *starPath = [documentsDirectory stringByAppendingPathComponent:[star objectForKey:@"filename"] ];
+		
+		p->CreateQueueForFile((CFStringRef) starPath);
+		p->StartQueue(false);
+
+//		ofLine(x+10,y,x-10,y);
+//		ofLine(x,y+10,x,y-10);
 		
 	}
 	
@@ -240,43 +252,50 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
-	playingOldSound = false;
-	// First, straighten out the circular buffer:
-	int endingPoint = writehead;
 
-	int straightBufferSize = recordingDuration * sampleRate;
-	short int *  straightBuffer = new short int[straightBufferSize];
-	for (int i = 0; i < straightBufferSize; i++) {
-		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+	if (playingOldSound) {
+		playingOldSound = false;
 	}
-	
-	playbackhead=writehead - straightBufferSize;
-	
-	// Then fade the beginning and end:
-	
-	//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
-	
-	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
-	
-	
-	//	recorder->SaveSamples(circBufferSize, circularBuffer);
-	
-	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
-	recorder->StartRecord((CFStringRef)dateString);
-	recorder->SaveSamples(straightBufferSize, straightBuffer);
-	recorder->StopRecord();	
-	
-	NSDictionary * thisStar = [NSDictionary dictionaryWithObjectsAndKeys:
-							   [NSNumber numberWithFloat:touch.x], @"x",
-							   [NSNumber numberWithFloat:touch.y], @"y",
-							   dateString, @"filename", nil
-							   ];
-	[allThings addObject:thisStar];
-	[allThings writeToFile:allThingsPath atomically:YES];
-	
-	playing = false;
+	else {
+		// First, straighten out the circular buffer:
+		int endingPoint = writehead;
+		
+		int straightBufferSize = recordingDuration * sampleRate;
+		short int *  straightBuffer = new short int[straightBufferSize];
+		for (int i = 0; i < straightBufferSize; i++) {
+			straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+		}
+		
+		playbackhead=writehead - straightBufferSize;
+		
+		// Then fade the beginning and end:
+		
+		//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+		
+		fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
+		
+		
+		//	recorder->SaveSamples(circBufferSize, circularBuffer);
+		
+		NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
+		NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
+		recorder->StartRecord((CFStringRef)dateString);
+		recorder->SaveSamples(straightBufferSize, straightBuffer);
+		recorder->StopRecord();	
+		
+		NSDictionary * thisStar = [NSDictionary dictionaryWithObjectsAndKeys:
+								   [NSNumber numberWithFloat:touch.x], @"x",
+								   [NSNumber numberWithFloat:touch.y], @"y",
+								   dateString, @"filename", nil
+								   ];
+		[allThings addObject:thisStar];
+		[allThings writeToFile:allThingsPath atomically:YES];
+		
+		playing = false;
+		
+	}
+
 }
 
 //--------------------------------------------------------------

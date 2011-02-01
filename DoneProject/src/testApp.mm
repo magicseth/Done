@@ -1,6 +1,8 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
 #define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
+#define STAR_SIZE 10
+#define STAR_TOUCH_SIZE 10
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #import "AQPlayer.h"
@@ -121,10 +123,10 @@ void testApp::draw(){
 	for (NSDictionary * star in allThings) {
 		float x = [[star objectForKey:@"x"] floatValue];
 		float y = [[star objectForKey:@"y"] floatValue];
-		ofLine(x+10,y,x-10,y);
-		ofLine(x,y+10,x,y-10);
-		ofLine(x+10,y-10,x-10,y+10);
-		ofLine(x+10,y+10,x-10,y-10);
+		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);
+		ofLine(x,y+STAR_SIZE,x,y-STAR_SIZE);
+		ofLine(x+STAR_SIZE,y-STAR_SIZE,x-STAR_SIZE,y+STAR_SIZE);
+		ofLine(x+STAR_SIZE,y+STAR_SIZE,x-STAR_SIZE,y-STAR_SIZE);
 
 	}
 	
@@ -218,7 +220,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	for (NSDictionary * star in allThings) {
 		float x = [[star objectForKey:@"x"] floatValue];
 		float y = [[star objectForKey:@"y"] floatValue];
-		if (x - 10 < touch.x  && x +10 > touch.x && y -10 < touch.y && y + 10 > touch.y ) {
+		if (touch.x > x - STAR_TOUCH_SIZE  &&  touch.x < x + STAR_TOUCH_SIZE  && 
+			touch.y > y - STAR_TOUCH_SIZE  &&  touch.y < y + STAR_TOUCH_SIZE ) {
 			//we have a star touched.
 			playingOldSound = true;
 			playing = false;

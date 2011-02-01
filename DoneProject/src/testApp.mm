@@ -222,15 +222,16 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			//we have a star touched.
 			playingOldSound = true;
 			playing = false;
+			AQPlayer * p = new AQPlayer;
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+			NSString *documentsDirectory = [paths objectAtIndex:0];
+			
+			NSString *starPath = [documentsDirectory stringByAppendingPathComponent:[star objectForKey:@"filename"] ];
+			
+			p->CreateQueueForFile((CFStringRef) starPath);
+			p->StartQueue(false);
+			
 		}
-		AQPlayer * p = new AQPlayer;
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-		NSString *documentsDirectory = [paths objectAtIndex:0];
-		
-		NSString *starPath = [documentsDirectory stringByAppendingPathComponent:[star objectForKey:@"filename"] ];
-		
-		p->CreateQueueForFile((CFStringRef) starPath);
-		p->StartQueue(false);
 
 //		ofLine(x+10,y,x-10,y);
 //		ofLine(x,y+10,x,y-10);

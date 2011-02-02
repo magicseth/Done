@@ -17,7 +17,7 @@
 {
 	if (self =[super init]) {
 		_path = [path copy];
-		_allStars =  [NSKeyedUnarchiver unarchiveObjectWithFile:_path];
+		_allStars =  [[NSKeyedUnarchiver unarchiveObjectWithFile:_path] retain];
 		if (!_allStars) {
 			_allStars = [[NSMutableArray alloc] init];
 		}
@@ -40,6 +40,12 @@
 	[newStar setFilename:filename];
 	[_allStars addObject:newStar];
 	[NSKeyedArchiver archiveRootObject:_allStars toFile:_path];
+}
+- (void) delete:(Star*) star;
+{
+	// deleteFile:
+	[_allStars removeObject:star];
+	[NSKeyedArchiver archiveRootObject:_allStars toFile:_path];	
 }
 
 @end

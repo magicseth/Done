@@ -83,6 +83,13 @@ void testApp::setup(){
 							 );
 	
 	recorder = new AQRecorder();
+	
+	invis = [[InvisibleViewController alloc] init];
+	UIView * v = iPhoneGetGLView();
+	[[invis view] setUserInteractionEnabled:NO];
+	[invis setStarMan:starMan];
+	[[[UIApplication sharedApplication] keyWindow] insertSubview:invis.view aboveSubview:v];
+
 
 }
 
@@ -224,13 +231,16 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			playingOldSound = true;
 			playing = false;
 			AQPlayer * p = new AQPlayer;
-			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-			NSString *documentsDirectory = [paths objectAtIndex:0];
 			
-			NSString *starPath = [documentsDirectory stringByAppendingPathComponent:star.filename];
 			
-			p->CreateQueueForFile((CFStringRef) starPath);
+			p->CreateQueueForFile((CFStringRef) star.path);
 			p->StartQueue(false);
+			UIView * v = iPhoneGetGLView();
+			
+			[invis showMenuForStar:star];
+			break;
+			
+			
 			
 		}
 

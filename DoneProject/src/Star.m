@@ -22,6 +22,12 @@
 	[super dealloc];
 }
 
+- (NSString *) path;
+{
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	return [documentsDirectory stringByAppendingPathComponent:_filename];	
+}
 
 - (void)encodeWithCoder:(NSCoder *)aCoder;
 {
@@ -34,7 +40,7 @@
 	if (self = [super init]) {
 		float x = [aDecoder decodeFloatForKey:@"x"];
 		float y = [aDecoder decodeFloatForKey:@"y"];
-		_filename = [aDecoder decodeObjectForKey:@"filename"];
+		_filename = [[aDecoder decodeObjectForKey:@"filename"] retain];
 		_point = CGPointMake(x, y);
 	}
 	return self;

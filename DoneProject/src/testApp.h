@@ -6,6 +6,10 @@
 #import "AQRecorder.h"
 #import "Star.h"
 #import "StarManager.h"
+#import "InvisibleViewController.h"
+
+
+
 
 class testApp : public ofxiPhoneApp {
 	
@@ -50,7 +54,9 @@ public:
 	NSArray * allThings;
 	StarManager * starMan;	
 	
-	bool playingOldSound;
+	InvisibleViewController * invis;
+
+bool playingOldSound;
 
 };
 

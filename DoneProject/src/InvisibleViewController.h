@@ -7,13 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Star.h"
+#import "StarManager.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
+@interface InvisibleViewController : UIViewController <UIActionSheetDelegate, MFMailComposeViewControllerDelegate> {
 
-@interface InvisibleViewController : UIViewController {
-
-	NSString * _currentStar;
+	Star * _currentStar;
+	StarManager *_starMan;
 }
 
-@property (nonatomic, copy) NSString *currentStar;
+@property (nonatomic, retain) StarManager *starMan;
+@property (nonatomic, retain) Star *currentStar;
 
 @end

@@ -13,6 +13,7 @@
 	NSString *_filename;
 	CGPoint _point;
 }
+- (NSString *) path;
 
 @property (nonatomic, copy) NSString *filename;
 @property (nonatomic, assign) CGPoint point;

@@ -69,11 +69,9 @@ void testApp::setup(){
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
-	allThingsPath = [[documentsDirectory stringByAppendingPathComponent:@"allThings.dict"] retain];
-	allThings = [[NSArray arrayWithContentsOfFile:allThingsPath] mutableCopy];
-	if (!allThings) {
-		allThings = [[NSMutableArray alloc] init];
-	}
+	allThingsPath = [[documentsDirectory stringByAppendingPathComponent:@"allThings.keys"] retain];
+	starMan = [[StarManager alloc] initWithPath:allThingsPath];
+	allThings = [starMan allStars];
 
 	// make it come out the loud speaker 
 	UInt32 doChangeDefaultRoute = 1;
@@ -120,9 +118,9 @@ void testApp::draw(){
 
 	}
 	
-	for (NSDictionary * star in allThings) {
-		float x = [[star objectForKey:@"x"] floatValue];
-		float y = [[star objectForKey:@"y"] floatValue];
+	for (Star * star in allThings) {
+		float x = star.point.x;
+		float y = star.point.y;
 		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);
 		ofLine(x,y+STAR_SIZE,x,y-STAR_SIZE);
 		ofLine(x+STAR_SIZE,y-STAR_SIZE,x-STAR_SIZE,y+STAR_SIZE);
@@ -217,9 +215,9 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	bufferCounter=0;
 
-	for (NSDictionary * star in allThings) {
-		float x = [[star objectForKey:@"x"] floatValue];
-		float y = [[star objectForKey:@"y"] floatValue];
+	for (Star * star in allThings) {
+		float x = star.point.x;
+		float y = star.point.y;
 		if (touch.x > x - STAR_TOUCH_SIZE  &&  touch.x < x + STAR_TOUCH_SIZE  && 
 			touch.y > y - STAR_TOUCH_SIZE  &&  touch.y < y + STAR_TOUCH_SIZE ) {
 			//we have a star touched.
@@ -229,7 +227,7 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
 			NSString *documentsDirectory = [paths objectAtIndex:0];
 			
-			NSString *starPath = [documentsDirectory stringByAppendingPathComponent:[star objectForKey:@"filename"] ];
+			NSString *starPath = [documentsDirectory stringByAppendingPathComponent:star.filename];
 			
 			p->CreateQueueForFile((CFStringRef) starPath);
 			p->StartQueue(false);
@@ -288,13 +286,7 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 		recorder->SaveSamples(straightBufferSize, straightBuffer);
 		recorder->StopRecord();	
 		
-		NSDictionary * thisStar = [NSDictionary dictionaryWithObjectsAndKeys:
-								   [NSNumber numberWithFloat:touch.x], @"x",
-								   [NSNumber numberWithFloat:touch.y], @"y",
-								   dateString, @"filename", nil
-								   ];
-		[allThings addObject:thisStar];
-		[allThings writeToFile:allThingsPath atomically:YES];
+		[starMan addStarAtPoint:CGPointMake(touch.x, touch.y) withName:dateString];
 		
 		playing = false;
 		

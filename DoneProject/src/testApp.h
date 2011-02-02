@@ -4,6 +4,8 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 #import "AQRecorder.h"
+#import "Star.h"
+#import "StarManager.h"
 
 class testApp : public ofxiPhoneApp {
 	
@@ -45,7 +47,8 @@ public:
 	int		recordingDuration;
 	AQRecorder * recorder;
 	NSString * allThingsPath;
-	NSMutableArray *allThings;
+	NSArray * allThings;
+	StarManager * starMan;	
 	
 	bool playingOldSound;
 

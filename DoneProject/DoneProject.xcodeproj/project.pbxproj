@@ -23,6 +23,8 @@
 		5E2568A710ED26CD00A9501C /* PocoUtil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E25688310ED26CC00A9501C /* PocoUtil.a */; };
 		5E2568A810ED26CD00A9501C /* PocoXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E25688410ED26CC00A9501C /* PocoXML.a */; };
 		643CE3A512E573E20032EF0C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 643CE3A412E573E20032EF0C /* AVFoundation.framework */; };
+		64492BE612F9A6F5001B5159 /* StarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BE512F9A6F5001B5159 /* StarManager.m */; };
+		64492BF012F9A7AC001B5159 /* Star.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BEF12F9A7AC001B5159 /* Star.m */; };
 		64BBCFC112E6A64A00355A69 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64BBCFC012E6A64A00355A69 /* CoreAudio.framework */; };
 		64BBCFDC12E6A93500355A69 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFD512E6A93500355A69 /* CADebugMacros.cpp */; };
 		64BBCFDD12E6A93500355A69 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFD812E6A93500355A69 /* CAStreamBasicDescription.cpp */; };
@@ -83,6 +85,10 @@
 		5E25688310ED26CC00A9501C /* PocoUtil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = PocoUtil.a; path = ../../../libs/poco/lib/osx/PocoUtil.a; sourceTree = SOURCE_ROOT; };
 		5E25688410ED26CC00A9501C /* PocoXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = PocoXML.a; path = ../../../libs/poco/lib/osx/PocoXML.a; sourceTree = SOURCE_ROOT; };
 		643CE3A412E573E20032EF0C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		64492BE412F9A6F5001B5159 /* StarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarManager.h; sourceTree = "<group>"; };
+		64492BE512F9A6F5001B5159 /* StarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarManager.m; sourceTree = "<group>"; };
+		64492BEE12F9A7AC001B5159 /* Star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Star.h; sourceTree = "<group>"; };
+		64492BEF12F9A7AC001B5159 /* Star.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Star.m; sourceTree = "<group>"; };
 		64BBCFC012E6A64A00355A69 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		64BBCFD512E6A93500355A69 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
 		64BBCFD612E6A93500355A69 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
@@ -580,6 +586,10 @@
 				E4D8936B11527B74007E1F53 /* main.mm */,
 				E4D8936D11527B74007E1F53 /* testApp.mm */,
 				E4D8936C11527B74007E1F53 /* testApp.h */,
+				64492BE412F9A6F5001B5159 /* StarManager.h */,
+				64492BE512F9A6F5001B5159 /* StarManager.m */,
+				64492BEE12F9A7AC001B5159 /* Star.h */,
+				64492BEF12F9A7AC001B5159 /* Star.m */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -687,6 +697,8 @@
 				64BBCFDE12E6A93500355A69 /* CAXException.cpp in Sources */,
 				64BBCFE412E6A93E00355A69 /* AQPlayer.mm in Sources */,
 				64BBCFE512E6A93E00355A69 /* AQRecorder.mm in Sources */,
+				64492BE612F9A6F5001B5159 /* StarManager.m in Sources */,
+				64492BF012F9A7AC001B5159 /* Star.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,6 +4,8 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 #import "AQRecorder.h"
+#import "AQPlayer.h"
+
 #import "Star.h"
 #import "StarManager.h"
 #import "InvisibleViewController.h"
@@ -36,6 +38,7 @@ public:
 	void recordAudioToNewStar(float tx, float ty);
 	void playStar(Star * star);
 	Star * whichStar(float tx, float ty);
+	AQPlayer *audioFilePlayer;
 
 
 	

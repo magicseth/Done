@@ -5,7 +5,6 @@
 #define STAR_TOUCH_SIZE 10
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
-#import "AQPlayer.h"
 #include <sys/utsname.h>
 
 #define NUM_CHANNELS 1
@@ -225,10 +224,15 @@ void testApp::playStar(Star * star)
 {
 	playingOldSound = true;
 	playing = false;
-	AQPlayer * p = new AQPlayer;
+	if (audioFilePlayer) {
+		audioFilePlayer->StopQueue();
+		audioFilePlayer->DisposeQueue(YES);
+		delete audioFilePlayer;
+	}
+	audioFilePlayer = new AQPlayer;
 	if (!simulator) {
-		p->CreateQueueForFile((CFStringRef) star.path);
-		p->StartQueue(false);
+		audioFilePlayer->CreateQueueForFile((CFStringRef) star.path);
+		audioFilePlayer->StartQueue(false);
 	}
 }
 

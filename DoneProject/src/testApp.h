@@ -34,6 +34,8 @@ public:
 
 	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
 	void playStar(Star * star);
+	Star * whichStar(float tx, float ty);
+
 
 	
 	int		initialBufferSize;
@@ -49,6 +51,8 @@ public:
 	bool	playing;
 	bool	recording;
 	int		soundLength;
+	
+	Star * touchedStar;
 	
 	int		recordingDuration;
 	AQRecorder * recorder;

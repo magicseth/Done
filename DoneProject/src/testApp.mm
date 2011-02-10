@@ -232,6 +232,22 @@ void testApp::playStar(Star * star)
 	}
 }
 
+Star * testApp::whichStar(float tx, float ty)
+{
+	for (Star * star in allThings) {
+		float x = star.point.x;
+		float y = star.point.y;
+		if (tx > x - STAR_TOUCH_SIZE  &&  tx < x + STAR_TOUCH_SIZE  && 
+			ty > y - STAR_TOUCH_SIZE  &&  ty < y + STAR_TOUCH_SIZE ) {
+			//we have a star touched.
+			return star;
+			break;	
+		}
+	}	
+	return nil;
+}
+
+
 #pragma mark -
 #pragma mark Touch Handling:
 
@@ -253,16 +269,10 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 	bufferCounter=0;
 
 	// Find if we have touched one of the stars;
-	for (Star * star in allThings) {
-		float x = star.point.x;
-		float y = star.point.y;
-		if (touch.x > x - STAR_TOUCH_SIZE  &&  touch.x < x + STAR_TOUCH_SIZE  && 
-			touch.y > y - STAR_TOUCH_SIZE  &&  touch.y < y + STAR_TOUCH_SIZE ) {
-			//we have a star touched.
-			playStar(star);
-			[invis showMenuForStar:star];
-			break;	
-		}
+	touchedStar = whichStar(touch.x, touch.y);
+	if (touchedStar) {
+		playStar(touchedStar);
+		[invis showMenuForStar:touchedStar];
 	}
 }
 

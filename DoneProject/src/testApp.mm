@@ -6,6 +6,7 @@
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #import "AQPlayer.h"
+#include <sys/utsname.h>
 
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
@@ -89,6 +90,21 @@ void testApp::setup(){
 	[[invis view] setUserInteractionEnabled:NO];
 	[invis setStarMan:starMan];
 	[[[UIApplication sharedApplication] keyWindow] insertSubview:invis.view aboveSubview:v];
+	
+	
+	/// Check to see if we are running on the simulator
+	NSString *hwid;
+	// could use this but less specific: hwid = [[UIDevice currentDevice] model];
+	struct utsname u;
+	uname(&u);	// u.machine = "i386" for simulator, "iPod1,1" on iPod Touch, "iPhone1,1" on iPhone V1 & "iPhone1,2" on iPhone3G
+	hwid = [NSString stringWithFormat:@"%s",u.machine];
+	if ([hwid isEqualToString:@"i386"]) {
+		simulator = YES;
+	} else {
+		simulator = NO;
+	}
+
+	
 
 
 }
@@ -233,8 +249,10 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			AQPlayer * p = new AQPlayer;
 			
 			
-			p->CreateQueueForFile((CFStringRef) star.path);
-			p->StartQueue(false);
+			if (!simulator) {
+				p->CreateQueueForFile((CFStringRef) star.path);
+				p->StartQueue(false);
+			}
 			UIView * v = iPhoneGetGLView();
 			
 			[invis showMenuForStar:star];

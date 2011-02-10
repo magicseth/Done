@@ -54,6 +54,8 @@ public:
 	NSArray * allThings;
 	StarManager * starMan;	
 	
+	BOOL simulator;
+	
 	InvisibleViewController * invis;
 
 bool playingOldSound;

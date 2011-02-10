@@ -33,6 +33,7 @@ public:
 	void audioRequested(float * output, int bufferSize, int nChannels);
 
 	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
+	void recordAudioToNewStar(float tx, float ty);
 	void playStar(Star * star);
 	Star * whichStar(float tx, float ty);
 
@@ -52,7 +53,8 @@ public:
 	bool	recording;
 	int		soundLength;
 	
-	Star * touchedStar;
+	bool	dragged;
+	Star *  touchedStar;
 	
 	int		recordingDuration;
 	AQRecorder * recorder;

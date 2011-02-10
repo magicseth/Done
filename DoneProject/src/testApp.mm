@@ -270,15 +270,17 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 
 	// Find if we have touched one of the stars;
 	touchedStar = whichStar(touch.x, touch.y);
-	if (touchedStar) {
-		playStar(touchedStar);
-		[invis showMenuForStar:touchedStar];
-	}
+	dragged = false;
 }
 
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs &touch){
+	
+	if (touchedStar) {
+		dragged = true;
+		touchedStar.point = CGPointMake(touch.x, touch.y);
+	}
 	float ratio = (touch.x)/320;
 	recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
 	recordingDuration = MIN(DURATION_OF_CIRCULAR_BUFFER, recordingDuration);
@@ -291,50 +293,64 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
 
+	
+	Star * endStar = whichStar(touch.x, touch.y);
+	// Find if we have touched one of the stars;
+	if (endStar && !dragged) {
+		playStar(endStar);
+		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
+	} else if (!dragged) {
+		recordAudioToNewStar(touch.x, touch.y);
+	}
+	
 	if (playingOldSound) {
 		playingOldSound = false;
 	}
 	else {
-		// First, straighten out the circular buffer:
-		int endingPoint = writehead;
-		
-		int straightBufferSize = recordingDuration * sampleRate;
-		short int *  straightBuffer = new short int[straightBufferSize];
-		for (int i = 0; i < straightBufferSize; i++) {
-			straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
-		}
-		
-		playbackhead=writehead - straightBufferSize;
-		
-		// Then fade the beginning and end:
-		
-		//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
-		
-		fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
-		
-		
-		//	recorder->SaveSamples(circBufferSize, circularBuffer);
-		
-		NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-		NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
-		recorder->StartRecord((CFStringRef)dateString);
-		recorder->SaveSamples(straightBufferSize, straightBuffer);
-		recorder->StopRecord();	
-		
-		[starMan addStarAtPoint:CGPointMake(touch.x, touch.y) withName:dateString];
-		
-		playing = false;
-		recording = true;
-		
-	}
 
+	}
+	playing = false;
+	recording = true;
+	
 }
 
 //--------------------------------------------------------------
 void testApp::touchDoubleTap(ofTouchEventArgs &touch){
 
 }
+
+void testApp::recordAudioToNewStar(float tx, float ty)
+{
+	// First, straighten out the circular buffer:
+	int endingPoint = writehead;
+	
+	int straightBufferSize = recordingDuration * sampleRate;
+	short int *  straightBuffer = new short int[straightBufferSize];
+	for (int i = 0; i < straightBufferSize; i++) {
+		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+	}
+	
+	playbackhead=writehead - straightBufferSize;
+	
+	// Then fade the beginning and end:
+	
+	//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+	
+	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
+	
+	
+	//	recorder->SaveSamples(circBufferSize, circularBuffer);
+	
+	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
+	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
+	recorder->StartRecord((CFStringRef)dateString);
+	recorder->SaveSamples(straightBufferSize, straightBuffer);
+	recorder->StopRecord();	
+	
+	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:dateString];	
+}
+
 
 //--------------------------------------------------------------
 void testApp::lostFocus(){

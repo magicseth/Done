@@ -50,6 +50,7 @@ void testApp::setup(){
 	playbackhead		= 0;
 	writehead			= 0;
 	playing				= false;
+	recording			= true;
 	playingOldSound		= false;
 
 	
@@ -169,7 +170,7 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 		return;
 	}	
 	
-	if (!playing) {
+	if (recording) {
 		// samples are "interleaved"
 		for (int i = 0; i < bufferSize; i++){
 			buffer[i] = input[i];
@@ -225,8 +226,6 @@ void testApp::exit(){
 void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	
-	playing = true;
-
 	int endingPoint = writehead;
 	int sampleLength;
 	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
@@ -317,6 +316,7 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 		[starMan addStarAtPoint:CGPointMake(touch.x, touch.y) withName:dateString];
 		
 		playing = false;
+		recording = true;
 		
 	}
 

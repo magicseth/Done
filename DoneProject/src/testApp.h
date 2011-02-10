@@ -46,6 +46,7 @@ public:
 	int		playbackhead;// This points to the place in the circular Buffer that we are going to play back next
 	int		writehead;
 	bool	playing;
+	bool	recording;
 	int		soundLength;
 	
 	int		recordingDuration;

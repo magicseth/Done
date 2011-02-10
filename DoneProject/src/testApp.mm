@@ -118,7 +118,9 @@ void testApp::update(){
 void testApp::draw(){
 	
 	ofTranslate(0, 0, 0);
-	
+	float yValue = 50; // y value at which the sound file is centered vertically
+	float p1 = .05;// break points for piecewise linear scaling of sound visualization
+	float p2 = 0.3;
 	// draw the input:
 	ofSetColor(0x333333);
 	ofRect(0,0,360,480);
@@ -136,8 +138,25 @@ void testApp::draw(){
 			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
 		}		
 		ave=ave / (initialBufferSize / aveSampleSkip);
-		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200+ave*1000.0f);
-		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),200-ave*1000.0f);
+		if(ave<p1)
+		{
+			ave=ave*10;
+		}
+		else if(ave<p2)
+		{
+			ave/1000;
+		}
+		else {
+			ave/5000;
+		}
+
+		ave=ave*70.0f;
+		if(ave>50)
+		{
+			ave=50;
+		}
+		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),yValue,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),50+ave);
+		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),yValue,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),50-ave);
 
 	}
 	
@@ -157,6 +176,15 @@ void testApp::draw(){
 	char reportString[255];
 	sprintf(reportString, "buffers received: %i\ndraw routines called: %i\n", bufferCounter,drawCounter);
 	//ofDrawBitmapString(reportString, 70,308);
+	
+	ofDrawBitmapString("30s", 100, yValue);
+
+	
+	int startX = 100;
+	ofEnableAlphaBlending();
+	ofSetColor(0,255,255,80);   // red, 50% transparent
+	ofRect(startX,0, 320-startX, 100);
+	ofDisableAlphaBlending();
 	
 	
 }

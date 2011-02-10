@@ -4,6 +4,8 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 #import "AQRecorder.h"
+#import "AQPlayer.h"
+
 #import "Star.h"
 #import "StarManager.h"
 #import "InvisibleViewController.h"
@@ -33,6 +35,11 @@ public:
 	void audioRequested(float * output, int bufferSize, int nChannels);
 
 	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
+	void recordAudioToNewStar(float tx, float ty);
+	void playStar(Star * star);
+	Star * whichStar(float tx, float ty);
+	AQPlayer *audioFilePlayer;
+
 
 	
 	int		initialBufferSize;
@@ -46,13 +53,19 @@ public:
 	int		playbackhead;// This points to the place in the circular Buffer that we are going to play back next
 	int		writehead;
 	bool	playing;
+	bool	recording;
 	int		soundLength;
+	
+	bool	dragged;
+	Star *  touchedStar;
 	
 	int		recordingDuration;
 	AQRecorder * recorder;
 	NSString * allThingsPath;
 	NSArray * allThings;
 	StarManager * starMan;	
+	
+	BOOL simulator;
 	
 	InvisibleViewController * invis;
 

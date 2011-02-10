@@ -5,7 +5,7 @@
 #define STAR_TOUCH_SIZE 10
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
-#import "AQPlayer.h"
+#include <sys/utsname.h>
 
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
@@ -49,6 +49,7 @@ void testApp::setup(){
 	playbackhead		= 0;
 	writehead			= 0;
 	playing				= false;
+	recording			= true;
 	playingOldSound		= false;
 
 	
@@ -89,6 +90,21 @@ void testApp::setup(){
 	[[invis view] setUserInteractionEnabled:NO];
 	[invis setStarMan:starMan];
 	[[[UIApplication sharedApplication] keyWindow] insertSubview:invis.view aboveSubview:v];
+	
+	
+	/// Check to see if we are running on the simulator
+	NSString *hwid;
+	// could use this but less specific: hwid = [[UIDevice currentDevice] model];
+	struct utsname u;
+	uname(&u);	// u.machine = "i386" for simulator, "iPod1,1" on iPod Touch, "iPhone1,1" on iPhone V1 & "iPhone1,2" on iPhone3G
+	hwid = [NSString stringWithFormat:@"%s",u.machine];
+	if ([hwid isEqualToString:@"i386"]) {
+		simulator = YES;
+	} else {
+		simulator = NO;
+	}
+
+	
 
 
 }
@@ -181,7 +197,7 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 		return;
 	}	
 	
-	if (!playing) {
+	if (recording) {
 		// samples are "interleaved"
 		for (int i = 0; i < bufferSize; i++){
 			buffer[i] = input[i];
@@ -226,61 +242,77 @@ void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 			output[i] = 0;
 		}		
 	}
-
 }
 //--------------------------------------------------------------
 void testApp::exit(){
 
 }
 
+void testApp::playStar(Star * star)
+{
+	playingOldSound = true;
+	playing = false;
+	if (audioFilePlayer) {
+		audioFilePlayer->StopQueue();
+		audioFilePlayer->DisposeQueue(YES);
+		delete audioFilePlayer;
+	}
+	audioFilePlayer = new AQPlayer;
+	if (!simulator) {
+		audioFilePlayer->CreateQueueForFile((CFStringRef) star.path);
+		audioFilePlayer->StartQueue(false);
+	}
+}
+
+Star * testApp::whichStar(float tx, float ty)
+{
+	for (Star * star in allThings) {
+		float x = star.point.x;
+		float y = star.point.y;
+		if (tx > x - STAR_TOUCH_SIZE  &&  tx < x + STAR_TOUCH_SIZE  && 
+			ty > y - STAR_TOUCH_SIZE  &&  ty < y + STAR_TOUCH_SIZE ) {
+			//we have a star touched.
+			return star;
+			break;	
+		}
+	}	
+	return nil;
+}
+
+
+#pragma mark -
+#pragma mark Touch Handling:
+
+
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	
-	playing = true;
-
-	int endingPoint = writehead;
 	int sampleLength;
+	// This code shrinks our sampleLength if we haven't yet recorded enough
+	// to fill the whole circular buffer
 	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
 		sampleLength=DURATION_OF_CIRCULAR_BUFFER*sampleRate;
 	}
 	else {
 		sampleLength= bufferCounter * initialBufferSize;
 	}
-	
+	// Reset the length of our next recorded sample to 0
 	bufferCounter=0;
 
-	for (Star * star in allThings) {
-		float x = star.point.x;
-		float y = star.point.y;
-		if (touch.x > x - STAR_TOUCH_SIZE  &&  touch.x < x + STAR_TOUCH_SIZE  && 
-			touch.y > y - STAR_TOUCH_SIZE  &&  touch.y < y + STAR_TOUCH_SIZE ) {
-			//we have a star touched.
-			playingOldSound = true;
-			playing = false;
-			AQPlayer * p = new AQPlayer;
-			
-			
-			p->CreateQueueForFile((CFStringRef) star.path);
-			p->StartQueue(false);
-			UIView * v = iPhoneGetGLView();
-			
-			[invis showMenuForStar:star];
-			break;
-			
-			
-			
-		}
-
-//		ofLine(x+10,y,x-10,y);
-//		ofLine(x,y+10,x,y-10);
-		
-	}
-	
+	// Find if we have touched one of the stars;
+	touchedStar = whichStar(touch.x, touch.y);
+	dragged = false;
 }
+
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs &touch){
+	
+	if (touchedStar) {
+		dragged = true;
+		touchedStar.point = CGPointMake(touch.x, touch.y);
+	}
 	float ratio = (touch.x)/320;
 	recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
 	recordingDuration = MIN(DURATION_OF_CIRCULAR_BUFFER, recordingDuration);
@@ -293,49 +325,64 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
 
+	
+	Star * endStar = whichStar(touch.x, touch.y);
+	// Find if we have touched one of the stars;
+	if (endStar && !dragged) {
+		playStar(endStar);
+		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
+	} else if (!dragged) {
+		recordAudioToNewStar(touch.x, touch.y);
+	}
+	
 	if (playingOldSound) {
 		playingOldSound = false;
 	}
 	else {
-		// First, straighten out the circular buffer:
-		int endingPoint = writehead;
-		
-		int straightBufferSize = recordingDuration * sampleRate;
-		short int *  straightBuffer = new short int[straightBufferSize];
-		for (int i = 0; i < straightBufferSize; i++) {
-			straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
-		}
-		
-		playbackhead=writehead - straightBufferSize;
-		
-		// Then fade the beginning and end:
-		
-		//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
-		
-		fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
-		
-		
-		//	recorder->SaveSamples(circBufferSize, circularBuffer);
-		
-		NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-		NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
-		recorder->StartRecord((CFStringRef)dateString);
-		recorder->SaveSamples(straightBufferSize, straightBuffer);
-		recorder->StopRecord();	
-		
-		[starMan addStarAtPoint:CGPointMake(touch.x, touch.y) withName:dateString];
-		
-		playing = false;
-		
-	}
 
+	}
+	playing = false;
+	recording = true;
+	
 }
 
 //--------------------------------------------------------------
 void testApp::touchDoubleTap(ofTouchEventArgs &touch){
 
 }
+
+void testApp::recordAudioToNewStar(float tx, float ty)
+{
+	// First, straighten out the circular buffer:
+	int endingPoint = writehead;
+	
+	int straightBufferSize = recordingDuration * sampleRate;
+	short int *  straightBuffer = new short int[straightBufferSize];
+	for (int i = 0; i < straightBufferSize; i++) {
+		straightBuffer[i] = circularBuffer[((i+ endingPoint - straightBufferSize + circBufferSize)%circBufferSize)] * 32000;
+	}
+	
+	playbackhead=writehead - straightBufferSize;
+	
+	// Then fade the beginning and end:
+	
+	//	void testApp::fadeAudio(float * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint){
+	
+	fadeAudio(straightBuffer, straightBufferSize, straightBufferSize, SAMPLES_TO_FADE, 0);
+	
+	
+	//	recorder->SaveSamples(circBufferSize, circularBuffer);
+	
+	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
+	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
+	recorder->StartRecord((CFStringRef)dateString);
+	recorder->SaveSamples(straightBufferSize, straightBuffer);
+	recorder->StopRecord();	
+	
+	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:dateString];	
+}
+
 
 //--------------------------------------------------------------
 void testApp::lostFocus(){

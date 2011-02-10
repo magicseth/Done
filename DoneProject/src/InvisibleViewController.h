@@ -18,6 +18,9 @@
 	StarManager *_starMan;
 }
 
+
+- (void) showMenuForStar:(Star*)star;
+
 @property (nonatomic, retain) StarManager *starMan;
 @property (nonatomic, retain) Star *currentStar;
 

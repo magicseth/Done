@@ -254,7 +254,6 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 				p->CreateQueueForFile((CFStringRef) star.path);
 				p->StartQueue(false);
 			}
-			UIView * v = iPhoneGetGLView();
 			
 			[invis showMenuForStar:star];
 			break;	

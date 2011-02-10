@@ -226,17 +226,19 @@ void testApp::exit(){
 void testApp::touchDown(ofTouchEventArgs &touch){
 	
 	
-	int endingPoint = writehead;
 	int sampleLength;
+	// This code shrinks our sampleLength if we haven't yet recorded enough
+	// to fill the whole circular buffer
 	if (bufferCounter*initialBufferSize>DURATION_OF_CIRCULAR_BUFFER*sampleRate) {
 		sampleLength=DURATION_OF_CIRCULAR_BUFFER*sampleRate;
 	}
 	else {
 		sampleLength= bufferCounter * initialBufferSize;
 	}
-	
+	// Reset the length of our next recorded sample to 0
 	bufferCounter=0;
 
+	// Find if we have touched one of the stars;
 	for (Star * star in allThings) {
 		float x = star.point.x;
 		float y = star.point.y;
@@ -255,17 +257,9 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 			UIView * v = iPhoneGetGLView();
 			
 			[invis showMenuForStar:star];
-			break;
-			
-			
-			
+			break;	
 		}
-
-//		ofLine(x+10,y,x-10,y);
-//		ofLine(x,y+10,x,y-10);
-		
 	}
-	
 }
 
 //--------------------------------------------------------------

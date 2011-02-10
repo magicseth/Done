@@ -215,12 +215,26 @@ void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 			output[i] = 0;
 		}		
 	}
-
 }
 //--------------------------------------------------------------
 void testApp::exit(){
 
 }
+
+void testApp::playStar(Star * star)
+{
+	playingOldSound = true;
+	playing = false;
+	AQPlayer * p = new AQPlayer;
+	if (!simulator) {
+		p->CreateQueueForFile((CFStringRef) star.path);
+		p->StartQueue(false);
+	}
+}
+
+#pragma mark -
+#pragma mark Touch Handling:
+
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
@@ -245,21 +259,13 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 		if (touch.x > x - STAR_TOUCH_SIZE  &&  touch.x < x + STAR_TOUCH_SIZE  && 
 			touch.y > y - STAR_TOUCH_SIZE  &&  touch.y < y + STAR_TOUCH_SIZE ) {
 			//we have a star touched.
-			playingOldSound = true;
-			playing = false;
-			AQPlayer * p = new AQPlayer;
-			
-			
-			if (!simulator) {
-				p->CreateQueueForFile((CFStringRef) star.path);
-				p->StartQueue(false);
-			}
-			
+			playStar(star);
 			[invis showMenuForStar:star];
 			break;	
 		}
 	}
 }
+
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs &touch){

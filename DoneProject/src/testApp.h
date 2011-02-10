@@ -33,6 +33,7 @@ public:
 	void audioRequested(float * output, int bufferSize, int nChannels);
 
 	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
+	void playStar(Star * star);
 
 	
 	int		initialBufferSize;

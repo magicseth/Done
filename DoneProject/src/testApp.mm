@@ -161,6 +161,13 @@ void testApp::draw(){
 	}
 	
 	for (Star * star in allThings) {
+		if (star == touchedStar) {
+			ofSetColor(0xFFFF00);
+		} else {
+			ofSetColor(0xFFFFFF);
+		}
+
+		
 		float x = star.point.x;
 		float y = star.point.y;
 		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);

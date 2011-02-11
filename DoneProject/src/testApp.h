@@ -37,6 +37,8 @@ public:
 	void fadeAudio(short * soundToFade, int soundLength, int bufferLength, float rampLength, int startingPoint);
 	void recordAudioToNewStar(float tx, float ty);
 	void playStar(Star * star);
+	void stopPlaying();
+
 	Star * whichStar(float tx, float ty);
 	AQPlayer *audioFilePlayer;
 

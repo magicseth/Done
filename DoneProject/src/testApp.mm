@@ -128,8 +128,9 @@ void testApp::draw(){
 	int circIndex;
 	int theEnd=300;
 	float ave;
-	int aveSampleSkip=32*(recordingDuration/3);
-	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(recordingDuration/3)){
+	int displayWindowLength = DURATION_OF_CIRCULAR_BUFFER;
+	int aveSampleSkip=32*(displayWindowLength/3);
+	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(displayWindowLength/3)){
 		ave=0;
 		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
 //		ofLine(300);
@@ -155,8 +156,8 @@ void testApp::draw(){
 		{
 			ave=50;
 		}
-		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),yValue,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),50+ave);
-		ofLine(theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),yValue,theEnd-(i/initialBufferSize)/(recordingDuration/3.0f),50-ave);
+		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50+ave);
+		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
 
 	}
 	
@@ -188,6 +189,7 @@ void testApp::draw(){
 
 	
 	int startX = 100;
+	startX = 320 - (recordingDuration / (DURATION_OF_CIRCULAR_BUFFER *1.0) *320);
 	ofEnableAlphaBlending();
 	ofSetColor(0,255,255,80);   // red, 50% transparent
 	ofRect(startX,0, 320-startX, 100);
@@ -254,16 +256,22 @@ void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 void testApp::exit(){
 
 }
-
-void testApp::playStar(Star * star)
+void testApp::stopPlaying()
 {
-	playingOldSound = true;
 	playing = false;
 	if (audioFilePlayer) {
 		audioFilePlayer->StopQueue();
 		audioFilePlayer->DisposeQueue(YES);
 		delete audioFilePlayer;
+		audioFilePlayer = nil;
 	}
+	
+}
+
+void testApp::playStar(Star * star)
+{
+	playingOldSound = true;
+	stopPlaying();
 	audioFilePlayer = new AQPlayer;
 	if (!simulator) {
 		audioFilePlayer->CreateQueueForFile((CFStringRef) star.path);
@@ -309,6 +317,10 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 
 	// Find if we have touched one of the stars;
 	touchedStar = whichStar(touch.x, touch.y);
+	if (touchedStar) {
+		// Start playing the star that was touched.
+		playStar(touchedStar);
+	}
 	dragged = false;
 }
 
@@ -320,26 +332,28 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 	if (touchedStar) {
 		touchedStar.point = CGPointMake(touch.x, touch.y);
 	}
-	float ratio = (touch.x)/320;
-	recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
-	recordingDuration = MIN(DURATION_OF_CIRCULAR_BUFFER, recordingDuration);
-	int straightBufferSize = recordingDuration * sampleRate;
+	if (touch.y < 80) {
+		float ratio = 1-(touch.x)/320;
+		recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
+		recordingDuration = MIN(DURATION_OF_CIRCULAR_BUFFER, recordingDuration);
+		int straightBufferSize = recordingDuration * sampleRate;
+		playbackhead=writehead - straightBufferSize;
+	}
 	
-	playbackhead=writehead - straightBufferSize;
 	
 }
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
-
-	
 	Star * endStar = whichStar(touch.x, touch.y);
 	// Find if we have touched one of the stars;
 	if (endStar && !dragged) {
-		playStar(endStar);
 		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
-	} else if (!dragged) {
-		recordAudioToNewStar(touch.x, touch.y);
+	} else {
+		if (!dragged) {
+			recordAudioToNewStar(touch.x, touch.y);
+		}
+		stopPlaying();
 	}
 	
 	if (playingOldSound) {

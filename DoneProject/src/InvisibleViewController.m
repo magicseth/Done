@@ -62,7 +62,7 @@
 {
 	self.currentStar = star;
 	
-	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Memory", @"Memory")
+	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Playing Memory", @"Playing a Memory")
 													   delegate:self
 											  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
 										 destructiveButtonTitle:NSLocalizedString(@"Erase", @"Erase this memory")

@@ -309,8 +309,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs &touch){
 	
+	dragged = true;
 	if (touchedStar) {
-		dragged = true;
 		touchedStar.point = CGPointMake(touch.x, touch.y);
 	}
 	float ratio = (touch.x)/320;

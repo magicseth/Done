@@ -2,7 +2,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
 #define STAR_SIZE 10
-#define STAR_TOUCH_SIZE 10
+#define STAR_TOUCH_SIZE 15
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #include <sys/utsname.h>

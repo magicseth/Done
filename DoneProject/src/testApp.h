@@ -38,6 +38,8 @@ public:
 	void recordAudioToNewStar(float tx, float ty);
 	void playStar(Star * star);
 	void stopPlaying();
+	void drawStar(float x, float y);
+
 
 	Star * whichStar(float tx, float ty);
 	AQPlayer *audioFilePlayer;

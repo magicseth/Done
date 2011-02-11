@@ -1,6 +1,6 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
-#define DURATION_OF_CIRCULAR_BUFFER 30 // in seconds
+#define DURATION_OF_CIRCULAR_BUFFER (30 * 1) // in seconds
 #define STAR_SIZE 10
 #define STAR_TOUCH_SIZE 15
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
@@ -113,7 +113,55 @@ void testApp::setup(){
 void testApp::update(){
 
 }
-
+void testApp::drawStar(float x, float y)
+{
+	int style = 3;
+	
+	float points = 5.0;
+	float outerLength = 14;
+	float innerLength = 6;
+	float rotation = .5;
+	
+	if (style == 0) {
+		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);
+		ofLine(x,y+STAR_SIZE,x,y-STAR_SIZE);
+		ofLine(x+STAR_SIZE,y-STAR_SIZE,x-STAR_SIZE,y+STAR_SIZE);
+		ofLine(x+STAR_SIZE,y+STAR_SIZE,x-STAR_SIZE,y-STAR_SIZE);	
+	} else if (style == 1) {
+		// Asterisk
+		for (int i = 0; i < points; i++) {
+			float outerx = sin((((i/points) * 360.0) * DEG_TO_RAD)) * outerLength;
+			float outery = cos((((i/points) * 360.0) * DEG_TO_RAD)) * outerLength;
+			ofLine(x, y, x+outerx, y+outery);
+		}
+	} else if (style == 2) {
+		// Polygon
+		for (int i = 0; i < points; i++) {
+			float outerx = sin((((i/points) * 360.0) * DEG_TO_RAD)) * outerLength;
+			float outery = cos((((i/points) * 360.0) * DEG_TO_RAD)) * outerLength;
+			float innerx1 = sin(((((i+.5)/points) * 360.0) * DEG_TO_RAD)) * innerLength;
+			float innery1 = cos(((((i+.5)/points) * 360.0) * DEG_TO_RAD)) * innerLength;
+			float innerx2 = sin(((((i-.5)/points) * 360.0) * DEG_TO_RAD)) * innerLength;
+			float innery2 = cos(((((i-.5)/points) * 360.0) * DEG_TO_RAD)) * innerLength;
+			ofLine(x+innerx1, y+innery1, x+outerx, y+outery);
+			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
+		}
+	} else if (style == 3) {
+		// Filled Polygon
+		for (int i = 0; i < points; i++) {
+			float rotationOffset = 360 * rotation + x + y;
+			float outerx = sin((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
+			float outery = cos((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
+			float innerx1 = sin(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innery1 = cos(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innerx2 = sin(((((i-.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innery2 = cos(((((i-.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			ofTriangle(x, y, x+innerx1, y+innery1, x+outerx, y+outery);
+			ofTriangle(x, y, x+innerx2, y+innery2, x+outerx, y+outery);
+//			ofLine(x+innerx1, y+innery1, x+outerx, y+outery);
+//			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
+		}
+	}}
 //--------------------------------------------------------------
 void testApp::draw(){
 	
@@ -171,11 +219,8 @@ void testApp::draw(){
 		
 		float x = star.point.x;
 		float y = star.point.y;
-		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);
-		ofLine(x,y+STAR_SIZE,x,y-STAR_SIZE);
-		ofLine(x+STAR_SIZE,y-STAR_SIZE,x-STAR_SIZE,y+STAR_SIZE);
-		ofLine(x+STAR_SIZE,y+STAR_SIZE,x-STAR_SIZE,y-STAR_SIZE);
-
+		
+		drawStar(x,y);
 	}
 	
 	

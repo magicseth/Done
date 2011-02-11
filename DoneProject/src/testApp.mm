@@ -229,12 +229,16 @@ void testApp::draw(){
 	char reportString[255];
 	sprintf(reportString, "buffers received: %i\ndraw routines called: %i\n", bufferCounter,drawCounter);
 	//ofDrawBitmapString(reportString, 70,308);
-	
-	ofDrawBitmapString("30s", 100, yValue);
 
 	
 	int startX = 100;
 	startX = 320 - (recordingDuration / (DURATION_OF_CIRCULAR_BUFFER *1.0) *320);
+
+	
+	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
+	ofDrawBitmapString(seconds, startX, yValue);
+
+	
 	ofEnableAlphaBlending();
 	ofSetColor(0,255,255,80);   // red, 50% transparent
 	ofRect(startX,0, 320-startX, 100);

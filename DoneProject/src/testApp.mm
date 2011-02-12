@@ -148,8 +148,9 @@ void testApp::drawStar(float x, float y)
 		}
 	} else if (style == 3) {
 		// Filled Polygon
+		int twinkle = arc4random() %5;
 		for (int i = 0; i < points; i++) {
-			float rotationOffset = 360 * rotation + x + y;
+			float rotationOffset = 360 * rotation + x + y +twinkle;
 			float outerx = sin((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float outery = cos((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float innerx1 = sin(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
@@ -208,12 +209,36 @@ void testApp::draw(){
 		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
 
 	}
-	
+	int colors[] = {
+		0xFFFF00,
+		0xFF00FF,
+		0x00FFFF,
+		0xFF0000,
+		0x0000FF,
+		0x00FF00,
+
+		0xFFFFAA,
+		0xFFAAFF,
+		0xAAFFFF,
+		0xFFAAAA,
+		0xAAAAFF,
+		0xAAFFAA,
+		
+		0xAAAA00,
+		0xAA00AA,
+		0x00AAAA,
+		0xAA0000,
+		0x0000AA,
+		0x00AA00,
+		
+	};
+	int	i = 0;
 	for (Star * star in allThings) {
+		int color = colors[i%18];
 		if (star == touchedStar) {
 			ofSetColor(0xFFFF00);
 		} else {
-			ofSetColor(0xFFFFFF);
+			ofSetColor(color);
 		}
 
 		
@@ -221,6 +246,7 @@ void testApp::draw(){
 		float y = star.point.y;
 		
 		drawStar(x,y);
+		i++;
 	}
 	
 	
@@ -240,7 +266,7 @@ void testApp::draw(){
 
 	
 	ofEnableAlphaBlending();
-	ofSetColor(0,255,255,80);   // red, 50% transparent
+	ofSetColor(255,0,0,80);   // red, 50% transparent
 	ofRect(startX,0, 320-startX, 100);
 	ofDisableAlphaBlending();
 	

@@ -171,7 +171,7 @@ void testApp::draw(){
 	float p1 = .05;// break points for piecewise linear scaling of sound visualization
 	float p2 = 0.3;
 	// draw the input:
-	ofSetColor(0x333333);
+	ofSetColor(0x000000);
 	ofRect(0,0,360,480);
 	ofSetColor(0xFFFFFF);
 	int circIndex;

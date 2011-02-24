@@ -149,8 +149,9 @@ void testApp::drawStar(float x, float y)
 	} else if (style == 3) {
 		// Filled Polygon
 		int twinkle = arc4random() %5;
+//		outerLength += twinkle;
 		for (int i = 0; i < points; i++) {
-			float rotationOffset = 360 * rotation + x + y +twinkle;
+			float rotationOffset = 360 * rotation + x + y ;
 			float outerx = sin((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float outery = cos((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float innerx1 = sin(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;

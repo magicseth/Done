@@ -174,6 +174,12 @@ void testApp::draw(){
 	// draw the input:
 	ofSetColor(0x000000);
 	ofRect(0,0,360,480);
+	
+	if (selecting) {
+		ofSetColor(0x888888);   
+		ofRect(selectStart.x, selectStart.y, selectEnd.x - selectStart.x,  selectEnd.y - selectStart.y);
+	}
+
 	ofSetColor(0xFFFFFF);
 	int circIndex;
 	int theEnd=300;
@@ -245,6 +251,12 @@ void testApp::draw(){
 		
 		float x = star.point.x;
 		float y = star.point.y;
+		CGRect selection = CGRectMake(selectStart.x, selectStart.y, selectEnd.x - selectStart.x, selectEnd.y - selectStart.y);
+		if (selecting & CGRectContainsPoint(selection, CGPointMake(x, y))) {
+			ofSetColor(0, 0, 0);
+		} else {
+			ofSetColor(color);
+		}
 		
 		drawStar(x,y);
 		i++;
@@ -398,6 +410,8 @@ void testApp::touchDown(ofTouchEventArgs &touch){
 		playStar(touchedStar);
 	}
 	dragged = false;
+	selectStart = CGPointMake(touch.x, touch.y);
+	selectEnd = CGPointMake(touch.x, touch.y);
 }
 
 
@@ -416,6 +430,9 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 		playbackhead=writehead - straightBufferSize;
 	}
 	
+	selecting = YES;
+	selectEnd = CGPointMake(touch.x, touch.y);
+
 	
 }
 
@@ -440,6 +457,8 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 	}
 	playing = false;
 	recording = true;
+	
+	selecting = NO;
 	
 }
 

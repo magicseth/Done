@@ -69,6 +69,10 @@ public:
 	NSArray * allThings;
 	StarManager * starMan;	
 	
+	BOOL selecting;
+	CGPoint selectStart;
+	CGPoint selectEnd;
+	
 	BOOL simulator;
 	
 	InvisibleViewController * invis;

@@ -44,7 +44,7 @@ void testApp::setup(){
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 
-	recordingDuration	= 10;
+	recordingDuration	= 30;
 	
 	playbackhead		= 0;
 	writehead			= 0;

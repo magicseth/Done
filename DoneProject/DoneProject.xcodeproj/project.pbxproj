@@ -23,7 +23,7 @@
 		5E2568A710ED26CD00A9501C /* PocoUtil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E25688310ED26CC00A9501C /* PocoUtil.a */; };
 		5E2568A810ED26CD00A9501C /* PocoXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E25688410ED26CC00A9501C /* PocoXML.a */; };
 		643CE3A512E573E20032EF0C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 643CE3A412E573E20032EF0C /* AVFoundation.framework */; };
-		64492BC512F90CF0001B5159 /* InvisibleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BC412F90CF0001B5159 /* InvisibleViewController.m */; };
+		64492BC512F90CF0001B5159 /* InvisibleViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64492BC412F90CF0001B5159 /* InvisibleViewController.mm */; };
 		64492BE612F9A6F5001B5159 /* StarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BE512F9A6F5001B5159 /* StarManager.m */; };
 		64492BF012F9A7AC001B5159 /* Star.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BEF12F9A7AC001B5159 /* Star.m */; };
 		644ACD1D12F8699100F63941 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 644ACD1C12F8699100F63941 /* MessageUI.framework */; };
@@ -88,7 +88,7 @@
 		5E25688410ED26CC00A9501C /* PocoXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = PocoXML.a; path = ../../../libs/poco/lib/osx/PocoXML.a; sourceTree = SOURCE_ROOT; };
 		643CE3A412E573E20032EF0C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		64492BC312F90CF0001B5159 /* InvisibleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InvisibleViewController.h; sourceTree = "<group>"; };
-		64492BC412F90CF0001B5159 /* InvisibleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvisibleViewController.m; sourceTree = "<group>"; };
+		64492BC412F90CF0001B5159 /* InvisibleViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InvisibleViewController.mm; sourceTree = "<group>"; };
 		64492BE412F9A6F5001B5159 /* StarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarManager.h; sourceTree = "<group>"; };
 		64492BE512F9A6F5001B5159 /* StarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarManager.m; sourceTree = "<group>"; };
 		64492BEE12F9A7AC001B5159 /* Star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Star.h; sourceTree = "<group>"; };
@@ -594,7 +594,7 @@
 				E4D8936D11527B74007E1F53 /* testApp.mm */,
 				E4D8936C11527B74007E1F53 /* testApp.h */,
 				64492BC312F90CF0001B5159 /* InvisibleViewController.h */,
-				64492BC412F90CF0001B5159 /* InvisibleViewController.m */,
+				64492BC412F90CF0001B5159 /* InvisibleViewController.mm */,
 				64492BE412F9A6F5001B5159 /* StarManager.h */,
 				64492BE512F9A6F5001B5159 /* StarManager.m */,
 				64492BEE12F9A7AC001B5159 /* Star.h */,
@@ -706,7 +706,7 @@
 				64BBCFDE12E6A93500355A69 /* CAXException.cpp in Sources */,
 				64BBCFE412E6A93E00355A69 /* AQPlayer.mm in Sources */,
 				64BBCFE512E6A93E00355A69 /* AQRecorder.mm in Sources */,
-				64492BC512F90CF0001B5159 /* InvisibleViewController.m in Sources */,
+				64492BC512F90CF0001B5159 /* InvisibleViewController.mm in Sources */,
 				64492BE612F9A6F5001B5159 /* StarManager.m in Sources */,
 				64492BF012F9A7AC001B5159 /* Star.m in Sources */,
 			);

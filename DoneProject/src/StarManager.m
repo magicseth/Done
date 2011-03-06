@@ -47,6 +47,9 @@
 - (void) delete:(Star*) star;
 {
 	// deleteFile:
+	NSFileManager * fm = [NSFileManager defaultManager];
+	NSError * err;
+	[fm removeItemAtPath:[star path] error:&err];
 	[_allStars removeObject:star];
 	[NSKeyedArchiver archiveRootObject:_allStars toFile:_path];	
 }

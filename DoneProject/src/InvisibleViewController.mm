@@ -7,6 +7,8 @@
 //
 
 #import "InvisibleViewController.h"
+#import <AVFoundation/AVAudioSession.h>
+
 @implementation InvisibleViewController
 
 @synthesize testApp = _testApp;
@@ -34,6 +36,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self.view setBackgroundColor:[UIColor clearColor]];
+	[[AVAudioSession sharedInstance] setDelegate:self];
+
 }
 
 /*
@@ -148,6 +152,26 @@
 
     [super dealloc];
 }
+
+#pragma mark -
+#pragma mark Audio Interruption handlers
+- (void)beginInterruption;
+{
+	//	exit(0);
+	_testApp->audioInterrupted();
+	NSLog(@"Interrupted");
+}
+- (void)endInterruption; /* endInterruptionWithFlags: will be called instead if implemented. */
+{
+	_testApp->audioAvailable();
+
+	NSLog(@"Resumed");
+}
+- (void)inputIsAvailableChanged:(BOOL)isInputAvailable
+{
+	NSLog(@"Resumed");
+}
+
 
 
 @end

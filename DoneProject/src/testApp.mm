@@ -526,7 +526,13 @@ void testApp::lostFocus(){
 
 //--------------------------------------------------------------
 void testApp::gotFocus(){
-
+	if (!wehaveagoodaudiosession) {
+		ofSoundStreamStart();
+		wehaveagoodaudiosession = YES;
+		
+		
+	}
+	NSLog(@"We're back");
 }
 
 //--------------------------------------------------------------
@@ -541,5 +547,14 @@ void testApp::deviceOrientationChanged(int newOrientation){
 
 void testApp::invisibleViewControllerDismissed(){
 	selecting = NO;
+}
+void testApp::audioInterrupted(){
+	ofSoundStreamStop();
+	wehaveagoodaudiosession = NO;
+}
+void testApp::audioAvailable(){
+	ofSoundStreamStart();
+//	wehaveagoodaudiosession = YES;
+
 }
 

@@ -37,6 +37,8 @@ public:
 	void stopPlaying();
 	void drawStar(float x, float y);
 	void invisibleViewControllerDismissed();
+	void audioInterrupted();
+	void audioAvailable();
 
 
 
@@ -78,6 +80,7 @@ public:
 	NSObject * invis;
 
 bool playingOldSound;
+	BOOL wehaveagoodaudiosession;
 
 };
 

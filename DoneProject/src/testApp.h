@@ -8,9 +8,6 @@
 
 #import "Star.h"
 #import "StarManager.h"
-#import "InvisibleViewController.h"
-
-
 
 
 class testApp : public ofxiPhoneApp {
@@ -39,6 +36,9 @@ public:
 	void playStar(Star * star);
 	void stopPlaying();
 	void drawStar(float x, float y);
+	void invisibleViewControllerDismissed();
+
+
 
 
 	Star * whichStar(float tx, float ty);
@@ -75,7 +75,7 @@ public:
 	
 	BOOL simulator;
 	
-	InvisibleViewController * invis;
+	NSObject * invis;
 
 bool playingOldSound;
 

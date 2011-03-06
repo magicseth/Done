@@ -5,8 +5,9 @@
 //  Created by Seth Raphael on 2/1/11.
 //  Copyright 2011 None. All rights reserved.
 //
-
 #import <UIKit/UIKit.h>
+
+#import "testApp.h"
 #import "Star.h"
 #import "StarManager.h"
 #import <MessageUI/MessageUI.h>
@@ -16,8 +17,10 @@
 
 	StarManager *_starMan;
 	NSArray * _selectedStars;
+	testApp * _testApp;
 }
 
+@property (nonatomic, assign) testApp* testApp;
 @property (nonatomic, copy) NSArray *selectedStars;
 
 

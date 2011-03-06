@@ -6,6 +6,7 @@
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #include <sys/utsname.h>
+#import "InvisibleViewController.h"
 
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
@@ -89,7 +90,8 @@ void testApp::setup(){
 	UIView * v = iPhoneGetGLView();
 	[[invis view] setUserInteractionEnabled:NO];
 	[invis setStarMan:starMan];
-	[[[UIApplication sharedApplication] keyWindow] insertSubview:invis.view aboveSubview:v];
+	[invis setTestApp:this];
+	[[[UIApplication sharedApplication] keyWindow] insertSubview:[(InvisibleViewController *)invis view] aboveSubview:v];
 	
 	
 	/// Check to see if we are running on the simulator
@@ -434,6 +436,8 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 void testApp::touchUp(ofTouchEventArgs &touch){
 	Star * endStar = whichStar(touch.x, touch.y);
 	// Find if we have touched one of the stars;
+	selecting = NO;
+
 	if (endStar && !dragged) {
 		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
 	} else {
@@ -450,7 +454,11 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 					[selectedStars addObject:star];
 				}
 			}
-			
+			if ([selectedStars count]) {
+				// leave selection highlighting on the screen
+				selecting = YES;
+			}
+
 			[invis performSelector:@selector(showMenuForStars:) withObject:selectedStars afterDelay:.001];
 
 		} else 
@@ -469,8 +477,7 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 	}
 	playing = false;
 	recording = true;
-	
-	selecting = NO;
+
 	
 }
 
@@ -530,5 +537,9 @@ void testApp::gotMemoryWarning(){
 //--------------------------------------------------------------
 void testApp::deviceOrientationChanged(int newOrientation){
 
+}
+
+void testApp::invisibleViewControllerDismissed(){
+	selecting = NO;
 }
 

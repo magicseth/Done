@@ -7,10 +7,9 @@
 //
 
 #import "InvisibleViewController.h"
-
-
 @implementation InvisibleViewController
 
+@synthesize testApp = _testApp;
 @synthesize selectedStars = _selectedStars;
 @synthesize starMan = _starMan;
 
@@ -60,17 +59,8 @@
 
 - (void) showMenuForStar:(Star*)star;
 {
-	self.selectedStars = [NSArray arrayWithObject:star];
-	
-	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Playing Memory", @"Playing a Memory")
-													   delegate:self
-											  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
-										 destructiveButtonTitle:NSLocalizedString(@"Erase", @"Erase this memory")
-											  otherButtonTitles:NSLocalizedString(@"Email", @"E-mail"),
-							nil];
-	[sheet showInView:self.view];
-	[sheet release];
-	
+	[self showMenuForStars: [NSArray arrayWithObject:star]];
+		
 	
 }
 - (void) showMenuForStars:(NSArray *)stars;
@@ -80,9 +70,10 @@
 	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:(NSLocalizedString(@"%d Memories", @"a number of memories")), [stars count]]
 													   delegate:self
 											  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
-										 destructiveButtonTitle:NSLocalizedString(@"Erase Selected", @"Erase selected memories")
+										 destructiveButtonTitle:NSLocalizedString(@"Erase", @"Erase selected memories")
 											  otherButtonTitles:NSLocalizedString(@"Email", @"E-mail"),
 							nil];
+	[sheet setAlpha:0.7];
 	[sheet showInView:self.view];
 	[sheet release];
 	
@@ -135,6 +126,7 @@
 		default:
 			break;
 	}
+	(*_testApp).invisibleViewControllerDismissed();
 }
 
 
@@ -150,6 +142,9 @@
 
 	[_selectedStars release];
 	_selectedStars = nil;
+
+	[_testApp release];
+	_testApp = nil;
 
     [super dealloc];
 }

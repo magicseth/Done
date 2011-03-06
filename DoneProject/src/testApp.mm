@@ -526,12 +526,7 @@ void testApp::lostFocus(){
 
 //--------------------------------------------------------------
 void testApp::gotFocus(){
-	if (!wehaveagoodaudiosession) {
-		ofSoundStreamStart();
-		wehaveagoodaudiosession = YES;
-		
-		
-	}
+	audioAvailable();
 	NSLog(@"We're back");
 }
 
@@ -553,7 +548,23 @@ void testApp::audioInterrupted(){
 	wehaveagoodaudiosession = NO;
 }
 void testApp::audioAvailable(){
+	UInt32 session = kAudioSessionCategory_PlayAndRecord;
+	AudioSessionSetProperty (		
+							 kAudioSessionProperty_AudioCategory,
+							 sizeof (session),
+							 &session
+							 );
+	
 	ofSoundStreamStart();
+	// make it come out the loud speaker 
+	UInt32 doChangeDefaultRoute = 1;
+	
+	AudioSessionSetProperty (
+							 kAudioSessionProperty_OverrideCategoryDefaultToSpeaker,
+							 sizeof (doChangeDefaultRoute),
+							 &doChangeDefaultRoute
+							 );
+	
 //	wehaveagoodaudiosession = YES;
 
 }

@@ -413,7 +413,10 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 	dragged = true;
 	if (touchedStar) {
 		touchedStar.point = CGPointMake(touch.x, touch.y);
+	} else {
+		selecting = YES;
 	}
+
 	if (touch.y < 80) {
 		float ratio = 1-(touch.x)/320;
 		recordingDuration = MAX(ceil(DURATION_OF_CIRCULAR_BUFFER * ratio), 5);
@@ -422,7 +425,6 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 		playbackhead=writehead - straightBufferSize;
 	}
 	
-	selecting = YES;
 	selectEnd = CGPointMake(touch.x, touch.y);
 
 	

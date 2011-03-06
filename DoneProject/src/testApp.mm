@@ -216,44 +216,13 @@ void testApp::draw(){
 		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
 
 	}
-	int colors[] = {
-		
-		0x5b58dd,
-		0x252dac,
-		0xd350ee,
-		0xb50e5e,
-		0xd573d8,
-		0x5e81e7,
-		0xd27017,
-		0xfdff2d,
-		0x455c0d,
-		0xbfe552,
-		
-		0xFFFF00,
-		0xFF00FF,
-		0x00FFFF,
-		0xFF0000,
-		0x0000FF,
-		0x00FF00,
-
-		0xFFFFAA,
-		0xFFAAFF,
-		0xAAFFFF,
-		0xFFAAAA,
-		0xAAAAFF,
-		0xAAFFAA,
-		
-		0xAAAA00,
-		0xAA00AA,
-		0x00AAAA,
-		0xAA0000,
-		0x0000AA,
-		0x00AA00,
-		
-	};
 	int	i = 0;
 	for (Star * star in allThings) {
-		int color = colors[i%9];
+		int color = [star color];
+		if (!color) {
+			[star setColor:[StarManager randomColor]];
+			color = [star color];
+		}
 		if (0 && star == touchedStar) {
 			ofSetColor(0xFFFF00);
 		} else {

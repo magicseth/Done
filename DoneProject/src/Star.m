@@ -11,6 +11,7 @@
 
 @implementation Star
 
+@synthesize color = _color;
 @synthesize filename = _filename;
 @synthesize point = _point;
 
@@ -18,6 +19,7 @@
 {
 	[_filename release];
 	_filename = nil;
+
 
 	[super dealloc];
 }
@@ -34,6 +36,7 @@
 	[aCoder encodeFloat:_point.x forKey:@"x"];
 	[aCoder encodeFloat:_point.y forKey:@"y"];
 	[aCoder encodeObject:_filename forKey:@"filename"];
+	[aCoder encodeInt:_color forKey:@"color"];
 }
 - (id)initWithCoder:(NSCoder *)aDecoder;
 {
@@ -41,6 +44,7 @@
 		float x = [aDecoder decodeFloatForKey:@"x"];
 		float y = [aDecoder decodeFloatForKey:@"y"];
 		_filename = [[aDecoder decodeObjectForKey:@"filename"] retain];
+		_color = [aDecoder decodeIntForKey:@"color"] ;
 		_point = CGPointMake(x, y);
 	}
 	return self;

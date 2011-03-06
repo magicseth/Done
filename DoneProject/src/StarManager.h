@@ -17,5 +17,6 @@
 - (void) addStarAtPoint:(CGPoint) point withName:(NSString*) filename;
 
 @property (nonatomic, retain) NSMutableArray *allStars;
++ (int) randomColor;
 
 @end

@@ -12,7 +12,11 @@
 @interface Star : NSObject <NSCoding> {
 	NSString *_filename;
 	CGPoint _point;
+	uint32_t _color;
 }
+
+@property (nonatomic, assign) uint32_t color;
+
 - (NSString *) path;
 
 @property (nonatomic, copy) NSString *filename;

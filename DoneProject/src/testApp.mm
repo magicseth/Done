@@ -457,9 +457,9 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 			if ([selectedStars count]) {
 				// leave selection highlighting on the screen
 				selecting = YES;
+				[invis performSelector:@selector(showMenuForStars:) withObject:selectedStars afterDelay:.001];
 			}
 
-			[invis performSelector:@selector(showMenuForStars:) withObject:selectedStars afterDelay:.001];
 
 		} else 
 		{

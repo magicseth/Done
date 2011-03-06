@@ -510,12 +510,31 @@ void testApp::recordAudioToNewStar(float tx, float ty)
 	
 	NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"yyyy.MM.dd.hh:mm:ss"];
-	NSString *dateString = [[dateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@".caf"];
-	recorder->StartRecord((CFStringRef)dateString);
+	NSString *place;
+	if ([(InvisibleViewController*)invis placemark]) {
+		MKPlacemark *placemark = [(InvisibleViewController*)invis placemark];
+		place = [placemark subLocality];
+		if (!place) {
+			place = [placemark locality];
+		}
+	}
+	NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+	
+	NSString * fileName; 
+	if (place) {
+		place = [place stringByReplacingOccurrencesOfString:@" " withString:@""];
+		place = [place stringByReplacingOccurrencesOfString:@"," withString:@""];
+		fileName = [NSString stringWithFormat:@"%@.%@.caf", dateString, place];
+
+	} else {
+		fileName = [NSString stringWithFormat:@"%@.caf", dateString];
+	}
+
+	recorder->StartRecord((CFStringRef)fileName);
 	recorder->SaveSamples(straightBufferSize, straightBuffer);
 	recorder->StopRecord();	
 	
-	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:dateString];	
+	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:fileName];	
 }
 
 

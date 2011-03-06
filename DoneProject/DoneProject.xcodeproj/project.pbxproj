@@ -27,6 +27,7 @@
 		64492BE612F9A6F5001B5159 /* StarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BE512F9A6F5001B5159 /* StarManager.m */; };
 		64492BF012F9A7AC001B5159 /* Star.m in Sources */ = {isa = PBXBuildFile; fileRef = 64492BEF12F9A7AC001B5159 /* Star.m */; };
 		644ACD1D12F8699100F63941 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 644ACD1C12F8699100F63941 /* MessageUI.framework */; };
+		645B474113232337004DB7D0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645B474013232337004DB7D0 /* MapKit.framework */; };
 		64BBCFC112E6A64A00355A69 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64BBCFC012E6A64A00355A69 /* CoreAudio.framework */; };
 		64BBCFDC12E6A93500355A69 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFD512E6A93500355A69 /* CADebugMacros.cpp */; };
 		64BBCFDD12E6A93500355A69 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFD812E6A93500355A69 /* CAStreamBasicDescription.cpp */; };
@@ -94,6 +95,7 @@
 		64492BEE12F9A7AC001B5159 /* Star.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Star.h; sourceTree = "<group>"; };
 		64492BEF12F9A7AC001B5159 /* Star.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Star.m; sourceTree = "<group>"; };
 		644ACD1C12F8699100F63941 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		645B474013232337004DB7D0 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		64BBCFC012E6A64A00355A69 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		64BBCFD512E6A93500355A69 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
 		64BBCFD612E6A93500355A69 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				643CE3A512E573E20032EF0C /* AVFoundation.framework in Frameworks */,
 				64BBCFC112E6A64A00355A69 /* CoreAudio.framework in Frameworks */,
 				644ACD1D12F8699100F63941 /* MessageUI.framework in Frameworks */,
+				645B474113232337004DB7D0 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +261,7 @@
 				5326AEA710A23A0500278DE6 /* CoreLocation.framework */,
 				643CE3A412E573E20032EF0C /* AVFoundation.framework */,
 				64BBCFC012E6A64A00355A69 /* CoreAudio.framework */,
+				645B474013232337004DB7D0 /* MapKit.framework */,
 			);
 			name = "core frameworks";
 			sourceTree = "<group>";

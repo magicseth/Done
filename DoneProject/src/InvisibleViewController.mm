@@ -11,6 +11,8 @@
 
 @implementation InvisibleViewController
 
+@synthesize placemark = _placemark;
+@synthesize geocoder = _geocoder;
 @synthesize testApp = _testApp;
 @synthesize selectedStars = _selectedStars;
 @synthesize starMan = _starMan;
@@ -38,8 +40,60 @@
 	[self.view setBackgroundColor:[UIColor clearColor]];
 	[[AVAudioSession sharedInstance] setDelegate:self];
 
+	// Create the location manager if this object does not
+    // already have one.
+    if (nil == locationManager)
+        locationManager = [[CLLocationManager alloc] init];
+	
+    locationManager.delegate = self;
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+	
+    // Set a movement threshold for new events.
+    locationManager.distanceFilter = 500;
+	
+    [locationManager startUpdatingLocation];
+	
 }
 
+- (void) updateLocation;
+{
+    [locationManager startUpdatingLocation];
+}
+- (void)locationManager:(CLLocationManager *)manager
+	didUpdateToLocation:(CLLocation *)newLocation
+		   fromLocation:(CLLocation *)oldLocation;
+{
+    // If it's a relatively recent event, turn off updates to save power
+    NSDate* eventDate = newLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (abs(howRecent) < 15.0)
+    {
+        NSLog(@"latitude %+.6f, longitude %+.6f\n",
+			  newLocation.coordinate.latitude,
+			  newLocation.coordinate.longitude);
+		[locationManager stopUpdatingLocation];
+		if (!_geocoder) {
+			_geocoder = [[MKReverseGeocoder alloc] initWithCoordinate:newLocation.coordinate];
+			[_geocoder setDelegate:self];
+			[_geocoder start];
+		}
+
+    }
+}
+
+- (void)reverseGeocoder:(MKReverseGeocoder *)geocoder didFindPlacemark:(MKPlacemark *)placemark;
+{
+	self.placemark = placemark;
+	self.geocoder = nil;
+}
+// There are at least two types of errors:
+//   - Errors sent up from the underlying connection (temporary condition)
+//   - Result not found errors (permanent condition).  The result not found errors
+//     will have the domain MKErrorDomain and the code MKErrorPlacemarkNotFound
+- (void)reverseGeocoder:(MKReverseGeocoder *)geocoder didFailWithError:(NSError *)error;
+{
+	self.geocoder = nil;
+}
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -149,6 +203,12 @@
 
 	[_testApp release];
 	_testApp = nil;
+
+	[_geocoder release];
+	_geocoder = nil;
+
+	[_placemark release];
+	_placemark = nil;
 
     [super dealloc];
 }

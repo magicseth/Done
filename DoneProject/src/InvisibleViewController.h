@@ -14,14 +14,16 @@
 
 @interface InvisibleViewController : UIViewController <UIActionSheetDelegate, MFMailComposeViewControllerDelegate> {
 
-	Star * _currentStar;
 	StarManager *_starMan;
+	NSArray * _selectedStars;
 }
+
+@property (nonatomic, copy) NSArray *selectedStars;
 
 
 - (void) showMenuForStar:(Star*)star;
+- (void) showMenuForStars:(NSArray *)stars;
 
 @property (nonatomic, retain) StarManager *starMan;
-@property (nonatomic, retain) Star *currentStar;
 
 @end

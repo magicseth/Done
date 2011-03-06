@@ -11,8 +11,8 @@
 
 @implementation InvisibleViewController
 
+@synthesize selectedStars = _selectedStars;
 @synthesize starMan = _starMan;
-@synthesize currentStar = _currentStar;
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -60,7 +60,7 @@
 
 - (void) showMenuForStar:(Star*)star;
 {
-	self.currentStar = star;
+	self.selectedStars = [NSArray arrayWithObject:star];
 	
 	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Playing Memory", @"Playing a Memory")
 													   delegate:self
@@ -73,11 +73,28 @@
 	
 	
 }
-
-- (void) deleteStar;
+- (void) showMenuForStars:(NSArray *)stars;
 {
-	[_starMan delete:_currentStar];
-	_currentStar = nil;
+	self.selectedStars = stars;
+	
+	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:(NSLocalizedString(@"%d Memories", @"a number of memories")), [stars count]]
+													   delegate:self
+											  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+										 destructiveButtonTitle:NSLocalizedString(@"Erase Selected", @"Erase selected memories")
+											  otherButtonTitles:NSLocalizedString(@"Email", @"E-mail"),
+							nil];
+	[sheet showInView:self.view];
+	[sheet release];
+	
+	
+}
+
+- (void) deleteStars;
+{
+	for (Star * star in _selectedStars) {
+		[_starMan delete:star];
+	}
+	self.selectedStars = nil;
 }
 - (void) showEmail;
 {
@@ -86,21 +103,18 @@
 	
 	[picker setSubject:@"A moment of audio"];
 	
-	
-	// Set up recipients
-	NSArray *toRecipients = [NSArray arrayWithObject:@"first@example.com"]; 
-	NSArray *ccRecipients = [NSArray arrayWithObjects:@"second@example.com", @"third@example.com", nil]; 
-	NSArray *bccRecipients = [NSArray arrayWithObject:@"fourth@example.com"]; 
-	
 //	[picker setToRecipients:toRecipients];
 //	[picker setCcRecipients:ccRecipients];	
 //	[picker setBccRecipients:bccRecipients];
 	
 	// Attach an image to the email
 	//			NSString *path = [[NSBundle mainBundle] pathForResource:@"rainy" ofType:@"png"];
-	NSData *myData = [NSData dataWithContentsOfFile:_currentStar.path];
-	[picker addAttachmentData:myData mimeType:@"audio/x-caf" fileName:_currentStar.filename];
 	
+	for (Star * star in _selectedStars) {
+
+		NSData *myData = [NSData dataWithContentsOfFile:star.path];
+		[picker addAttachmentData:myData mimeType:@"audio/x-caf" fileName:star.filename];
+	}
 	// Fill out the email body text
 	NSString *emailBody = @"Here is the audio I recorded with 'Listening' for the iPhone:";
 	[picker setMessageBody:emailBody isHTML:NO];
@@ -116,7 +130,7 @@
 			[self showEmail];
 			break;
 		case 0: // Delete
-			[self deleteStar];
+			[self deleteStars];
 			break;
 		default:
 			break;
@@ -130,11 +144,12 @@
 }
 
 - (void)dealloc {
-	[_currentStar release];
-	_currentStar = nil;
 
 	[_starMan release];
 	_starMan = nil;
+
+	[_selectedStars release];
+	_selectedStars = nil;
 
     [super dealloc];
 }

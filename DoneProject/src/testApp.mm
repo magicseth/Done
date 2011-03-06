@@ -437,7 +437,25 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 	if (endStar && !dragged) {
 		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
 	} else {
-		if (!dragged) {
+		if (dragged) {
+			// we may have selected some stars
+			CGRect selection = CGRectMake(selectStart.x, selectStart.y, selectEnd.x - selectStart.x, selectEnd.y - selectStart.y);
+			NSMutableArray * selectedStars = [NSMutableArray array];
+
+			for (Star * star in allThings) {
+
+				float x = star.point.x;
+				float y = star.point.y;
+				if (CGRectContainsPoint(selection, CGPointMake(x, y))) {
+					[selectedStars addObject:star];
+				}
+			}
+			
+			[invis performSelector:@selector(showMenuForStars:) withObject:selectedStars afterDelay:.001];
+
+		} else 
+		{
+			// We just tapped one spot, record new star
 			recordAudioToNewStar(touch.x, touch.y);
 		}
 		stopPlaying();

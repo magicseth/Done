@@ -148,10 +148,20 @@ void testApp::drawStar(float x, float y)
 		}
 	} else if (style == 3) {
 		// Filled Polygon
-		int twinkle = arc4random() %5;
-//		outerLength += twinkle;
+//		int twinkle = arc4random() %5;
+		int max_twinkle = 20;
+		int twinkle = (int)(drawCounter * .05 + x) %max_twinkle;
+		if (twinkle > max_twinkle/2) {
+			twinkle = max_twinkle-twinkle;
+		}
+		int max_growth = 6000;
+		int growth = (int)(drawCounter * 10 + y) %max_growth;
+		if (growth > max_growth) {
+			growth = max_growth - growth; 
+		}
+//		outerLength += growth/1000.0;
 		for (int i = 0; i < points; i++) {
-			float rotationOffset = 360 * rotation + x + y ;
+			float rotationOffset = 360 * rotation + x + y + twinkle;
 			float outerx = sin((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float outery = cos((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
 			float innerx1 = sin(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
@@ -163,7 +173,8 @@ void testApp::drawStar(float x, float y)
 //			ofLine(x+innerx1, y+innery1, x+outerx, y+outery);
 //			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
 		}
-	}}
+	}
+}
 //--------------------------------------------------------------
 void testApp::draw(){
 	

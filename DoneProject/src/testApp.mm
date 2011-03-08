@@ -436,6 +436,7 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 void testApp::touchUp(ofTouchEventArgs &touch){
 	Star * endStar = whichStar(touch.x, touch.y);
 	// Find if we have touched one of the stars;
+	BOOL wasSelecting = selecting;
 	selecting = NO;
 
 	if (endStar && !dragged) {
@@ -454,7 +455,7 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 					[selectedStars addObject:star];
 				}
 			}
-			if ([selectedStars count]) {
+			if ([selectedStars count] && wasSelecting) {
 				// leave selection highlighting on the screen
 				selecting = YES;
 				[invis performSelector:@selector(showMenuForStars:) withObject:selectedStars afterDelay:.001];

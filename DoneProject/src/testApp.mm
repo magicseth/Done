@@ -115,6 +115,19 @@ void testApp::setup(){
 void testApp::update(){
 
 }
+
+void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.04f) {
+	ofNoFill();
+	
+	int spacing = 10;
+	ofBeginShape();
+	float yoffset = 50;
+	for(int x=-spacing; x<=ofGetWidth() +spacing; x+= spacing) {
+		ofCurveVertex(x, yoffset  + height * sin(x*period + ofGetFrameNum() * speed));
+	}
+	ofEndShape(false);
+	ofFill();
+}
 void testApp::drawStar(float x, float y)
 {
 	int style = 3;
@@ -198,37 +211,85 @@ void testApp::draw(){
 	int theEnd=300;
 	float ave;
 	int displayWindowLength = DURATION_OF_CIRCULAR_BUFFER;
-	int aveSampleSkip=32*(displayWindowLength/3);
-	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(displayWindowLength/3)){
-		ave=0;
-		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
-//		ofLine(300);
-		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
-		{
-			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
-		}		
-		ave=ave / (initialBufferSize / aveSampleSkip);
-		if(ave<p1)
-		{
-			ave=ave*10;
-		}
-		else if(ave<p2)
-		{
-			ave/1000;
-		}
-		else {
-			ave/5000;
-		}
-
-		ave=ave*70.0f;
-		if(ave>50)
-		{
-			ave=50;
-		}
-		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50+ave);
-		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
-
-	}
+	float aveSampleSkip=32*(displayWindowLength/3.0);
+//	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(displayWindowLength/3)){
+//		ave=0;
+//		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
+//		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
+//		{
+//			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
+//		}		
+//		ave=ave / (initialBufferSize / aveSampleSkip);
+//		if(ave<p1)
+//		{
+//			ave=ave*10;
+//		}
+//		else if(ave<p2)
+//		{
+//			ave/1000;
+//		}
+//		else {
+//			ave/5000;
+//		}
+//
+//		ave=ave*70.0f;
+//		if(ave>50)
+//		{
+//			ave=50;
+//		}
+//		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50+ave);
+// 		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
+//
+//	}
+	
+	
+//	float xwidth = 320;
+//	float yheight = 40;
+//	
+//	int samplesPerPixel = circBufferSize/xwidth;
+//	int firstIndex = ((0 + samplesPerPixel)/ samplesPerPixel) % circBufferSize;
+//	for (int i = 0; i < xwidth; i++) {
+//		float value = 0;
+//		for (int subSample = 0; subSample < samplesPerPixel * 10; subSample++) {
+//			value += circularBuffer[(firstIndex + subSample + i * samplesPerPixel)%circBufferSize];
+//		}
+//		value = value / samplesPerPixel;
+//		
+////		int index = i/ xwidth * circBufferSize;
+////		circIndex = (writehead-1-index+circBufferSize)%circBufferSize;
+////		NSLog(@"writehead %d, percent %f, width %f",writehead,(writehead/(float)circBufferSize), xwidth);
+//		int xvalue =   (int(2 * xwidth - (int)(-i + (writehead/(float)circBufferSize) * xwidth)) % (int)xwidth)  ;
+////		NSLog(@"trying to print at %d", xvalue);
+////		ave = circularBuffer[circIndex];
+//		ave = value;
+//		if(ave<p1)
+//		{
+//			ave=ave*10;
+//		}
+//		else if(ave<p2)
+//		{
+//			ave/1000;
+//		}
+//		else {
+//			ave/5000;
+//		}
+//		
+//		ave=ave*70.0f;
+//		if(ave>50)
+//		{
+//			ave=50;
+//		}
+//		float yvalue = ave * 10 * 3;
+//		ofLine(xvalue, 0, xvalue, yvalue);
+//		
+//	}
+////	for (int i = 0; i < circBufferSize; i ++) {
+////		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
+////		float xvalue = xwidth * i/circBufferSize;
+////		float yvalue = circularBuffer[circIndex];
+////		ofLine(xvalue, 100, xvalue, -yvalue);
+////		
+////	}
 	int	i = 0;
 	for (Star * star in allThings) {
 		int color = [star color];
@@ -272,11 +333,34 @@ void testApp::draw(){
 	ofDrawBitmapString(seconds, startX, yValue);
 
 	
-	ofEnableAlphaBlending();
-	ofSetColor(255,0,0,80);   // red, 50% transparent
-	ofRect(startX,0, 320-startX, 100);
-	ofDisableAlphaBlending();
+//	ofEnableAlphaBlending();
+//	ofSetColor(255,0,0,80);   // red, 50% transparent
+//	ofRect(startX,0, 320-startX, 100);
+//	ofDisableAlphaBlending();
 	
+
+	ave = abs(circularBuffer[writehead-1]);
+	float mult = .7 + 2*ave;
+	ofSetColor(0x00FF00);
+	float height = 40/3  * mult;
+	float speed = 0.1;
+	float period = 0.01*2;
+
+	drawWave(height, speed, period);
+
+	ofSetColor(0xFFFFFF);
+	height = 20/3 * mult;
+	speed = 0.2;
+	period = 0.04*2;
+	drawWave(height, speed, period);
+	
+	ofSetColor(0x0000FF);
+	height = 70/3  * mult;
+	speed = 0.034;
+	period = 0.02*2;
+	drawWave(height, speed, period);
+
+
 	
 }
 // 

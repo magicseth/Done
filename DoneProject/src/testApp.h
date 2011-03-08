@@ -40,6 +40,7 @@ public:
 	void audioInterrupted();
 	void audioAvailable();
 
+	void drawWave(float height, float speed, float period);
 
 
 

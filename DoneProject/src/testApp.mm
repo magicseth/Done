@@ -33,9 +33,6 @@ void testApp::setup(){
 	sampleRate 			= 44100;
 	drawCounter			= 0;
 	bufferCounter		= 0;
-	
-	buffer				= new float[initialBufferSize];
-	memset(buffer, 0, initialBufferSize * sizeof(float));
 
 
 	// Allocate a buffer that we will put three seconds of sound into, we will fill it, and then move back to the
@@ -121,7 +118,7 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 	
 	int spacing = 10;
 	ofBeginShape();
-	float yoffset = 50;
+	float yoffset = 50;//ofGetHeight()/2.0;
 	for(int x=-spacing; x<=ofGetWidth() +spacing; x+= spacing) {
 		ofCurveVertex(x, yoffset  + height * sin(x*period + ofGetFrameNum() * speed));
 	}
@@ -190,13 +187,57 @@ void testApp::drawStar(float x, float y)
 		}
 	}
 }
+float testApp::stepWise(float ave){
+	float p1 = .05;// break points for piecewise linear scaling of sound visualization
+	float p2 = 0.3;
+
+	if(ave<p1)
+	{
+		ave=ave*10;
+	}
+	else if(ave<p2)
+	{
+		ave/1000;
+	}
+	else {
+		ave/5000;
+	}
+	
+	ave=ave*70.0f;
+	if(ave>50)
+	{
+		ave=50;
+	}
+	return ave;
+}
+void testApp::drawJaySound(){
+	float yValue = 50; // y value at which the sound file is centered vertically
+	
+	int circIndex;
+	int theEnd=300;
+	float ave;
+	int displayWindowLength = DURATION_OF_CIRCULAR_BUFFER;
+	float aveSampleSkip=32*(displayWindowLength/3.0);
+	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(displayWindowLength/3)){
+		ave=0;
+		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
+		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
+		{
+			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
+		}		
+		ave=ave / (initialBufferSize / aveSampleSkip);
+		ave = stepWise(ave);
+		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50+ave);
+		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
+
+	}
+	
+}
+
 //--------------------------------------------------------------
 void testApp::draw(){
 	
 	ofTranslate(0, 0, 0);
-	float yValue = 50; // y value at which the sound file is centered vertically
-	float p1 = .05;// break points for piecewise linear scaling of sound visualization
-	float p2 = 0.3;
 	// draw the input:
 	ofSetColor(0x000000);
 	ofRect(0,0,360,480);
@@ -207,41 +248,9 @@ void testApp::draw(){
 	}
 
 	ofSetColor(0xFFFFFF);
-	int circIndex;
-	int theEnd=300;
 	float ave;
-	int displayWindowLength = DURATION_OF_CIRCULAR_BUFFER;
-	float aveSampleSkip=32*(displayWindowLength/3.0);
-//	for (int i = 0; i < circBufferSize; i=i+initialBufferSize*(displayWindowLength/3)){
-//		ave=0;
-//		circIndex = (writehead-1-i+circBufferSize)%circBufferSize;
-//		for(int j=0; j<initialBufferSize; j=j+aveSampleSkip)
-//		{
-//			ave+=abs(circularBuffer[(circIndex+j)%circBufferSize]);
-//		}		
-//		ave=ave / (initialBufferSize / aveSampleSkip);
-//		if(ave<p1)
-//		{
-//			ave=ave*10;
-//		}
-//		else if(ave<p2)
-//		{
-//			ave/1000;
-//		}
-//		else {
-//			ave/5000;
-//		}
-//
-//		ave=ave*70.0f;
-//		if(ave>50)
-//		{
-//			ave=50;
-//		}
-//		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50+ave);
-// 		ofLine(theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),yValue,theEnd-(i/initialBufferSize)/(displayWindowLength/3.0f),50-ave);
-//
-//	}
-	
+
+//	drawJaySound();
 	
 //	float xwidth = 320;
 //	float yheight = 40;
@@ -330,7 +339,7 @@ void testApp::draw(){
 
 	
 	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
-	ofDrawBitmapString(seconds, startX, yValue);
+	ofDrawBitmapString(seconds, startX, 50);
 
 	
 //	ofEnableAlphaBlending();
@@ -340,21 +349,22 @@ void testApp::draw(){
 	
 
 	ave = abs(circularBuffer[writehead-1]);
-	float mult = .7 + 2*ave;
-	ofSetColor(0x00FF00);
+	float mult = .7 + 2*stepWise(ave)/50.0;
+	
+	ofSetColor(0x751E33);
 	float height = 40/3  * mult;
 	float speed = 0.1;
 	float period = 0.01*2;
 
 	drawWave(height, speed, period);
 
-	ofSetColor(0xFFFFFF);
+	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
 	speed = 0.2;
 	period = 0.04*2;
 	drawWave(height, speed, period);
 	
-	ofSetColor(0x0000FF);
+	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
 	speed = 0.034;
 	period = 0.02*2;

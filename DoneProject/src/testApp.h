@@ -41,6 +41,8 @@ public:
 	void audioAvailable();
 
 	void drawWave(float height, float speed, float period);
+	void drawJaySound();
+	float stepWise(float ave);
 
 
 

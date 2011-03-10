@@ -374,12 +374,28 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 	
 	if (recording) {
 		// samples are "interleaved"
-		for (int i = 0; i < bufferSize; i++){
-			buffer[i] = input[i];
-			circularBuffer[writehead] = input[i];
-			writehead++;
-			writehead = writehead % circBufferSize;
+		// We must write them in two chunks, because we have a circular buffer.
+		// We write all the way up to the end of our buffer, and then wrap around.
+		int remainingSpaceInCircularBuffer = circBufferSize - writehead;
+		int firstbytes = MIN(remainingSpaceInCircularBuffer, bufferSize);
+		memmove(&circularBuffer[writehead], input, firstbytes * sizeof(float));
+		writehead += firstbytes;
+		if (writehead >= circBufferSize) {
+			writehead = writehead - circBufferSize;
 		}
+		if (bufferSize > remainingSpaceInCircularBuffer) {
+			int leftoverbytes = bufferSize - remainingSpaceInCircularBuffer;
+			memmove(circularBuffer, &input[remainingSpaceInCircularBuffer], leftoverbytes  *sizeof(float));
+			writehead= leftoverbytes;
+		}
+//		for (int i = 0; i < bufferSize; i++){
+//			circularBuffer[writehead] = input[i];
+//			writehead++;
+//			if (writehead >= circBufferSize) {
+//				writehead = writehead - circBufferSize;
+//			}
+////			writehead = writehead % circBufferSize;
+//		}
 	}
 	
 	bufferCounter++;
@@ -413,9 +429,10 @@ void testApp::audioRequested(float * output, int bufferSize, int nChannels){
 		}
 	} else {
 		// Output silence
-		for (int i = 0; i < bufferSize; i++) {
-			output[i] = 0;
-		}		
+		bzero(output, bufferSize * sizeof(float));
+//		for (int i = 0; i < bufferSize; i++) {
+//			output[i] = 0;
+//		}		
 	}
 }
 //--------------------------------------------------------------

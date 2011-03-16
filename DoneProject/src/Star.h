@@ -13,6 +13,7 @@
 	NSString *_filename;
 	CGPoint _point;
 	uint32_t _color;
+	boolean_t _dragged;
 }
 
 @property (nonatomic, assign) uint32_t color;

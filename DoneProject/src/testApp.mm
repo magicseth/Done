@@ -1,12 +1,17 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
 #define DURATION_OF_CIRCULAR_BUFFER (30 * 1) // in seconds
-#define STAR_SIZE 10
-#define STAR_TOUCH_SIZE 35
+#define STAR_SIZE 100
+#define DRAGGED_STAR_SIZE 35
+#define STAR_TOUCH_SIZE 30
+#define STAR_DRAG_MULTIPLIER 5
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
+#define DEFAULT_RECORDING_DURATION 10
+boolean_t drawBig;
 #include <sys/utsname.h>
 #import "InvisibleViewController.h"
+
 
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
@@ -33,6 +38,8 @@ void testApp::setup(){
 	sampleRate 			= 44100;
 	drawCounter			= 0;
 	bufferCounter		= 0;
+	
+	drawBig = false; // start out by drawing all stars small (when a star is touched draw it bigger)
 
 
 	// Allocate a buffer that we will put three seconds of sound into, we will fill it, and then move back to the
@@ -42,7 +49,7 @@ void testApp::setup(){
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 
-	recordingDuration	= 30;
+	recordingDuration	= DEFAULT_RECORDING_DURATION;
 	
 	playbackhead		= 0;
 	writehead			= 0;
@@ -125,8 +132,9 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 	ofEndShape(false);
 	ofFill();
 }
-void testApp::drawStar(float x, float y)
+void testApp::drawStar(float x, float y, boolean_t this_star_dragged)
 {
+	int star_size;
 	int style = 3;
 	
 	float points = 5.0;
@@ -134,11 +142,23 @@ void testApp::drawStar(float x, float y)
 	float innerLength = 6;
 	float rotation = .5;
 	
+	if(this_star_dragged && drawBig)
+	{
+//		star_size=DRAGGED_STAR_SIZE;
+		innerLength=innerLength*STAR_DRAG_MULTIPLIER;
+		outerLength=outerLength*STAR_DRAG_MULTIPLIER;
+	}
+	else 
+	{
+//		star_size=STAR_SIZE;
+	}
+	
+	
 	if (style == 0) {
-		ofLine(x+STAR_SIZE,y,x-STAR_SIZE,y);
-		ofLine(x,y+STAR_SIZE,x,y-STAR_SIZE);
-		ofLine(x+STAR_SIZE,y-STAR_SIZE,x-STAR_SIZE,y+STAR_SIZE);
-		ofLine(x+STAR_SIZE,y+STAR_SIZE,x-STAR_SIZE,y-STAR_SIZE);	
+		ofLine(x+star_size,y,x-star_size,y);
+		ofLine(x,y+star_size,x,y-star_size);
+		ofLine(x+star_size,y-star_size,x-star_size,y+star_size);
+		ofLine(x+star_size,y+star_size,x-star_size,y-star_size);	
 	} else if (style == 1) {
 		// Asterisk
 		for (int i = 0; i < points; i++) {
@@ -322,7 +342,15 @@ void testApp::draw(){
 			ofSetColor(color);
 		}
 		
-		drawStar(x,y);
+		if(star==touchedStar)
+		{
+			drawStar(x,y,true);
+		}
+		else
+		{
+			drawStar(x,y,false);
+		}
+		
 		i++;
 	}
 	
@@ -359,13 +387,13 @@ void testApp::draw(){
 	float speed = 0.1;
 	float period = 0.01*2;
 
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 
 	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
 	speed = 0.2;
 	period = 0.04*2;
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 	
 	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
@@ -498,7 +526,7 @@ Star * testApp::whichStar(float tx, float ty)
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	
-	
+	drawBig=true;
 	int sampleLength;
 	// This code shrinks our sampleLength if we haven't yet recorded enough
 	// to fill the whole circular buffer
@@ -548,6 +576,9 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
+	//dragged = false;
+	
+	drawBig=false;
 	Star * endStar = whichStar(touch.x, touch.y);
 	// Find if we have touched one of the stars;
 	BOOL wasSelecting = selecting;

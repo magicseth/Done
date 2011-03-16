@@ -35,7 +35,7 @@ public:
 	void recordAudioToNewStar(float tx, float ty);
 	void playStar(Star * star);
 	void stopPlaying();
-	void drawStar(float x, float y);
+	void drawStar(float x, float y, boolean_t this_star_dragged);
 	void invisibleViewControllerDismissed();
 	void audioInterrupted();
 	void audioAvailable();

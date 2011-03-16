@@ -356,19 +356,19 @@ void testApp::draw(){
 	float speed = 0.1;
 	float period = 0.01*2;
 
-//	drawWave(height, speed, period);
+	drawWave(height, speed, period);
 
 	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
 	speed = 0.2;
 	period = 0.04*2;
-//	drawWave(height, speed, period);
+	drawWave(height, speed, period);
 	
 	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
 	speed = 0.034;
 	period = 0.02*2;
-//	drawWave(height, speed, period);
+	drawWave(height, speed, period);
 
 
 	

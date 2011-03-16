@@ -1,13 +1,14 @@
 #include "testApp.h"
 #import <AudioToolbox/AudioToolbox.h>
 #define DURATION_OF_CIRCULAR_BUFFER (30 * 1) // in seconds
-#define STAR_SIZE 100
+#define STAR_SIZE 15
 #define DRAGGED_STAR_SIZE 35
-#define STAR_TOUCH_SIZE 30
+#define STAR_TOUCH_SIZE 35
 #define STAR_DRAG_MULTIPLIER 5
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #define DEFAULT_RECORDING_DURATION 10
+#define SUPPRESS_WAVE false
 boolean_t drawBig;
 #include <sys/utsname.h>
 #import "InvisibleViewController.h"
@@ -366,11 +367,13 @@ void testApp::draw(){
 
 	
 	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
-	ofDrawBitmapString(seconds, startX, 50);
-	ofSetColor(0x999999);
-	ofLine(startX, 40, startX, 0);
-	ofDrawBitmapString(seconds, startX, 50);
-
+	ofSetColor(0x666666);
+	ofLine(startX, 80, startX, 30);
+	ofDrawBitmapString(seconds, startX + 2, 75);
+	ofEnableAlphaBlending();
+	ofSetColor(0,100,100,90);
+	ofRect(startX, 30, ofGetWidth()-startX, 50);
+	ofDisableAlphaBlending();
 	
 	
 //	ofEnableAlphaBlending();
@@ -386,21 +389,27 @@ void testApp::draw(){
 	float height = 40/3  * mult;
 	float speed = 0.1;
 	float period = 0.01*2;
-
-//	drawWave(height, speed, period);
-
+	
+	if(!SUPPRESS_WAVE)
+	{
+	drawWave(height, speed, period);
+	}
 	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
 	speed = 0.2;
 	period = 0.04*2;
-//	drawWave(height, speed, period);
-	
+	if(!SUPPRESS_WAVE)
+	{
+	drawWave(height, speed, period);
+	}
 	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
 	speed = 0.034;
 	period = 0.02*2;
-//	drawWave(height, speed, period);
-
+	if(!SUPPRESS_WAVE)
+	{
+	drawWave(height, speed, period);
+	}
 
 	
 }

@@ -332,7 +332,6 @@ void testApp::draw(){
 	char reportString[255];
 	sprintf(reportString, "buffers received: %i\ndraw routines called: %i\n", bufferCounter,drawCounter);
 	//ofDrawBitmapString(reportString, 70,308);
-
 	
 	int startX = 100;
 	startX = 320 - (recordingDuration / (DURATION_OF_CIRCULAR_BUFFER *1.0) *320);
@@ -340,7 +339,11 @@ void testApp::draw(){
 	
 	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
 	ofDrawBitmapString(seconds, startX, 50);
+	ofSetColor(0x999999);
+	ofLine(startX, 40, startX, 0);
+	ofDrawBitmapString(seconds, startX, 50);
 
+	
 	
 //	ofEnableAlphaBlending();
 //	ofSetColor(255,0,0,80);   // red, 50% transparent
@@ -368,7 +371,7 @@ void testApp::draw(){
 	height = 70/3  * mult;
 	speed = 0.034;
 	period = 0.02*2;
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 
 
 	

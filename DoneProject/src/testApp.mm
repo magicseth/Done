@@ -551,7 +551,8 @@ void testApp::touchUp(ofTouchEventArgs &touch){
 	selecting = NO;
 
 	if (endStar && !dragged) {
-		[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
+		// disable star menu unless highlighted
+		//[invis performSelector:@selector(showMenuForStar:) withObject:endStar afterDelay:.001];
 	} else {
 		if (dragged) {
 			// we may have selected some stars

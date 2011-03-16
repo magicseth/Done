@@ -2,7 +2,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #define DURATION_OF_CIRCULAR_BUFFER (30 * 1) // in seconds
 #define STAR_SIZE 10
-#define STAR_TOUCH_SIZE 15
+#define STAR_TOUCH_SIZE 35
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #include <sys/utsname.h>
@@ -356,19 +356,19 @@ void testApp::draw(){
 	float speed = 0.1;
 	float period = 0.01*2;
 
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 
 	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
 	speed = 0.2;
 	period = 0.04*2;
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 	
 	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
 	speed = 0.034;
 	period = 0.02*2;
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 
 
 	
@@ -600,6 +600,7 @@ void testApp::touchDoubleTap(ofTouchEventArgs &touch){
 
 void testApp::recordAudioToNewStar(float tx, float ty)
 {
+	
 	// First, straighten out the circular buffer:
 	int endingPoint = writehead;
 	
@@ -641,12 +642,13 @@ void testApp::recordAudioToNewStar(float tx, float ty)
 	} else {
 		fileName = [NSString stringWithFormat:@"%@.caf", dateString];
 	}
+	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:fileName];	
+
 
 	recorder->StartRecord((CFStringRef)fileName);
 	recorder->SaveSamples(straightBufferSize, straightBuffer);
 	recorder->StopRecord();	
 	
-	[starMan addStarAtPoint:CGPointMake(tx, ty) withName:fileName];	
 }
 
 

@@ -278,7 +278,7 @@ void testApp::draw(){
 		ofRect(selectStart.x, selectStart.y, selectEnd.x - selectStart.x,  selectEnd.y - selectStart.y);
 	}
 
-	ofSetColor(0x777777);
+	ofSetColor(0x333333);
 	float ave;
 
 	////////////////////// draw sound wave to screen
@@ -404,11 +404,11 @@ void testApp::draw(){
 	
 	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
 	ofSetColor(0x666666);
-	ofLine(startX, 80, startX, 30);
+	ofLine(startX, 80, startX, 20);
 	ofDrawBitmapString(seconds, startX + 2, 75);
 	ofEnableAlphaBlending();
 	ofSetColor(0,100,100,90);
-	ofRect(startX, 30, ofGetWidth()-startX, 50);
+	ofRect(startX, 20, ofGetWidth()-startX, 60);
 	ofDisableAlphaBlending();
 	
 	

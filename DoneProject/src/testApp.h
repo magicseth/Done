@@ -41,6 +41,8 @@ public:
 	void audioAvailable();
 
 	void drawWave(float height, float speed, float period);
+	float getVolume();
+	void setVolume(float volume);
 	void drawJaySound();
 	float stepWise(float ave);
 
@@ -56,6 +58,8 @@ public:
 	int		drawCounter, bufferCounter;
 	float 	* buffer;
 	float	* circularBuffer;
+	float   * volumeBuffer;
+	float   * screenVisBuffer;
 	float	* awesomeBuffer;
 
 	int		circBufferSize;

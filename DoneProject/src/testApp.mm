@@ -10,6 +10,10 @@
 #define DEFAULT_RECORDING_DURATION 10
 #define SUPPRESS_WAVE false
 boolean_t drawBig;
+int volumeBufferWidth;
+int volumeBufferWriteIndex;
+int volumeBufferReadIndex;
+
 #include <sys/utsname.h>
 #import "InvisibleViewController.h"
 
@@ -17,7 +21,8 @@ boolean_t drawBig;
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
 void testApp::setup(){	
-	
+	volumeBufferWriteIndex = 0;
+	volumeBufferWriteIndex = 0;
 	
 	// register touch events
 	ofRegisterTouchEvents(this);
@@ -47,6 +52,9 @@ void testApp::setup(){
 	// beginning;
 	circBufferSize		= sampleRate*DURATION_OF_CIRCULAR_BUFFER;
 	circularBuffer		= new float[circBufferSize];
+	volumeBufferWidth   = (DURATION_OF_CIRCULAR_BUFFER*((float)sampleRate/(float)initialBufferSize))+1;
+	volumeBuffer		= new float[volumeBufferWidth];	
+	screenVisBuffer     = new float[ofGetWidth()];
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 
@@ -116,6 +124,8 @@ void testApp::setup(){
 
 }
 
+
+
 //--------------------------------------------------------------
 void testApp::update(){
 
@@ -124,7 +134,7 @@ void testApp::update(){
 void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.04f) {
 	ofNoFill();
 	
-	int spacing = 10;
+	int spacing = 30;
 	ofBeginShape();
 	float yoffset = 50;//ofGetHeight()/2.0;
 	for(int x=-spacing; x<=ofGetWidth() +spacing; x+= spacing) {
@@ -268,8 +278,34 @@ void testApp::draw(){
 		ofRect(selectStart.x, selectStart.y, selectEnd.x - selectStart.x,  selectEnd.y - selectStart.y);
 	}
 
-	ofSetColor(0xFFFFFF);
+	ofSetColor(0x777777);
 	float ave;
+
+	////////////////////// draw sound wave to screen
+	float aveVol;
+	int counter;
+	int valsInOnePixel = ((float)volumeBufferWidth)/((float)ofGetWidth());
+	volumeBufferReadIndex = volumeBufferWriteIndex;
+	for(int j=0;j<ofGetWidth(); j++)
+	{
+		aveVol=0;
+		counter = 0;
+		for (int i=0; i<valsInOnePixel; i++) 
+		{
+			aveVol = aveVol + getVolume();
+			counter++;
+		}
+		screenVisBuffer[j] = aveVol/counter;
+	}
+	float radius=0;
+	for(int j=0;j<ofGetWidth(); j++)
+	{
+		radius = screenVisBuffer[j]*200;
+		if (radius>10){radius=10;}
+		ofCircle(j, 50, radius);
+	}
+	
+	
 
 //	drawJaySound();
 	
@@ -392,7 +428,7 @@ void testApp::draw(){
 	
 	if(!SUPPRESS_WAVE)
 	{
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 	}
 	ofSetColor(0xFF8954);
 	height = 20/3 * mult;
@@ -400,7 +436,7 @@ void testApp::draw(){
 	period = 0.04*2;
 	if(!SUPPRESS_WAVE)
 	{
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 	}
 	ofSetColor(0x8130A6);
 	height = 70/3  * mult;
@@ -413,6 +449,25 @@ void testApp::draw(){
 
 	
 }
+
+
+float testApp::getVolume()
+{
+	float toReturn;
+	toReturn = volumeBuffer[volumeBufferReadIndex];
+	volumeBufferReadIndex++;
+	volumeBufferReadIndex = volumeBufferReadIndex%volumeBufferWidth;
+	return toReturn;
+	
+}
+void testApp::setVolume(float loudness)
+{
+	volumeBuffer[volumeBufferWriteIndex]=loudness;
+	volumeBufferWriteIndex++;
+	volumeBufferWriteIndex = volumeBufferWriteIndex%volumeBufferWidth;
+	
+}
+
 // 
 //--------------------------------------------------------------
 void testApp::audioReceived(float * input, int bufferSize, int nChannels){
@@ -423,6 +478,26 @@ void testApp::audioReceived(float * input, int bufferSize, int nChannels){
 	}	
 	
 	if (recording) {
+		/*
+		int i;
+		for (i=0; i<bufferSize; i++) {
+			;
+		}
+		sprintf(reportString, "bufferSize: %i\ndraw routines called: %i\n", bufferCounter,drawCounter);
+
+		cout<<i;
+		cout<<bufferSize;
+		 */
+		float avg=0;
+		int skip=32;
+		int counter = 1;
+		for (int i = 0; i < bufferSize; i=i+skip)
+		{
+			avg += ABS( input[i] );
+			counter++;
+		} 
+		avg=avg/counter;
+		setVolume(avg);
 		// samples are "interleaved"
 		// We must write them in two chunks, because we have a circular buffer.
 		// We write all the way up to the end of our buffer, and then wrap around.

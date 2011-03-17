@@ -14,9 +14,11 @@
 #define SUPPRESS_WAVE false
 boolean_t drawBig;
 float starAnimationStep;
+int pixForVis;
 int volumeBufferWidth;
 int volumeBufferWriteIndex;
 int volumeBufferReadIndex;
+int screenVisCloudCounter;
 
 #include <sys/utsname.h>
 #import "InvisibleViewController.h"
@@ -28,6 +30,8 @@ void testApp::setup(){
 	volumeBufferWriteIndex = 0;
 	volumeBufferWriteIndex = 0;
 	starAnimationStep = 1.0; // make stars grow and shrink
+	pixForVis = ofGetWidth();
+	screenVisCloudCounter = 0;
 	
 	// register touch events
 	ofRegisterTouchEvents(this);
@@ -59,10 +63,17 @@ void testApp::setup(){
 	circularBuffer		= new float[circBufferSize];
 	volumeBufferWidth   = (DURATION_OF_CIRCULAR_BUFFER*((float)sampleRate/(float)initialBufferSize))+1;
 	volumeBuffer		= new float[volumeBufferWidth];	
-	screenVisBuffer     = new float[ofGetWidth()];
+	screenVisBuffer     = new float[pixForVis];
+	screenVisBufferYval = new float[pixForVis];
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 
+	for(int i=0;i<pixForVis;i++)
+	{
+		screenVisBufferYval[i]=ofRandom(45, 55);
+	}
+	
+	
 	recordingDuration	= DEFAULT_RECORDING_DURATION;
 	
 	playbackhead		= 0;
@@ -317,11 +328,15 @@ void testApp::draw(){
 		screenVisBuffer[j] = aveVol/counter;
 	}
 	float radius=0;
-	for(int j=0;j<ofGetWidth(); j++)
+	for(int j=0;j<pixForVis; j++)
 	{
 		radius = screenVisBuffer[j]*200;
 		if (radius>10){radius=10;}
-		ofCircle(j, 50, radius);
+		ofCircle(j, screenVisBufferYval[(j-screenVisCloudCounter+pixForVis)%pixForVis], radius);
+	}
+	screenVisCloudCounter++;
+	if (screenVisCloudCounter==pixForVis) {
+		screenVisCloudCounter=0;
 	}
 	
 	

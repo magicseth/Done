@@ -60,6 +60,7 @@ public:
 	float	* circularBuffer;
 	float   * volumeBuffer;
 	float   * screenVisBuffer;
+	float   * screenVisBufferYval;
 	float	* awesomeBuffer;
 
 	int		circBufferSize;

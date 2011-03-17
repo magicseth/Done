@@ -8,8 +8,12 @@
 #define SAMPLES_TO_FADE 1000 // for a smooth sounding transition
 #define CLICK_REMOVAL 1000 // take out this many samples at the end of the circular buffer
 #define DEFAULT_RECORDING_DURATION 10
+#define STAR_ANIMATION_GROW_SPEED 0.5
+#define STAR_ANIMATION_SHRINK_SPEED 0.25
+#define TRANSPARENCY_OF_STARS_WHILE_DRAGGING 180
 #define SUPPRESS_WAVE false
 boolean_t drawBig;
+float starAnimationStep;
 int volumeBufferWidth;
 int volumeBufferWriteIndex;
 int volumeBufferReadIndex;
@@ -23,6 +27,7 @@ int volumeBufferReadIndex;
 void testApp::setup(){	
 	volumeBufferWriteIndex = 0;
 	volumeBufferWriteIndex = 0;
+	starAnimationStep = 1.0; // make stars grow and shrink
 	
 	// register touch events
 	ofRegisterTouchEvents(this);
@@ -143,7 +148,7 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 	ofEndShape(false);
 	ofFill();
 }
-void testApp::drawStar(float x, float y, boolean_t this_star_dragged)
+void testApp::drawStar(float x, float y, boolean_t this_star_dragged, uint32_t color)
 {
 	int star_size;
 	int style = 3;
@@ -155,13 +160,24 @@ void testApp::drawStar(float x, float y, boolean_t this_star_dragged)
 	
 	if(this_star_dragged && drawBig)
 	{
+		ofEnableAlphaBlending();
+		ofSetColor(  color>>16  ,   (color>>8)%256      ,    color%256      ,  TRANSPARENCY_OF_STARS_WHILE_DRAGGING     );
+		if (starAnimationStep<STAR_DRAG_MULTIPLIER) {
+			starAnimationStep=starAnimationStep+STAR_ANIMATION_GROW_SPEED;
+		}
 //		star_size=DRAGGED_STAR_SIZE;
-		innerLength=innerLength*STAR_DRAG_MULTIPLIER;
-		outerLength=outerLength*STAR_DRAG_MULTIPLIER;
+		innerLength=innerLength*starAnimationStep;
+		outerLength=outerLength*starAnimationStep;
 	}
-	else 
+	else if(this_star_dragged) 
 	{
-//		star_size=STAR_SIZE;
+		if (starAnimationStep>1) {
+			starAnimationStep=starAnimationStep-STAR_ANIMATION_SHRINK_SPEED;
+			innerLength=innerLength*starAnimationStep;
+			outerLength=outerLength*starAnimationStep;
+
+		}
+		
 	}
 	
 	
@@ -217,6 +233,9 @@ void testApp::drawStar(float x, float y, boolean_t this_star_dragged)
 //			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
 		}
 	}
+	ofDisableAlphaBlending();
+
+
 }
 float testApp::stepWise(float ave){
 	float p1 = .05;// break points for piecewise linear scaling of sound visualization
@@ -381,11 +400,11 @@ void testApp::draw(){
 		
 		if(star==touchedStar)
 		{
-			drawStar(x,y,true);
+			drawStar(x,y,true, color);
 		}
 		else
 		{
-			drawStar(x,y,false);
+			drawStar(x,y,false, color);
 		}
 		
 		i++;

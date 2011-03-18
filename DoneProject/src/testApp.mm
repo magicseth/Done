@@ -397,6 +397,27 @@ void testApp::draw(){
 ////		
 ////	}
 	int	i = 0;
+	float lastx = 0;
+	float lasty = 0;
+	for (Star * star in allThings) {
+		i++;
+		float x = star.point.x;
+		float y = star.point.y;
+		int color = [star color];
+		color = 0x555555;
+		ofSetColor(color);
+
+		if (lastx && lasty && i != 7) {
+			//			ofSetColor(0xFFFFFF);
+			
+			ofLine(lastx, lasty, x, y);
+		}
+		lastx = x;
+		lasty = y;		
+
+	}
+	i=0;
+	
 	for (Star * star in allThings) {
 		int color = [star color];
 		if (!color) {

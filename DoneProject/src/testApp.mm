@@ -232,6 +232,27 @@ void testApp::drawStar(float x, float y, boolean_t this_star_dragged, uint32_t c
 //			ofLine(x+innerx1, y+innery1, x+outerx, y+outery);
 //			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
 		}
+		outerLength *= 1.3;
+		innerLength *= 1.3;
+
+		for (int i = 0; i < points; i++) {
+			ofEnableAlphaBlending();
+			ofSetColor(  color>>16  ,   (color>>8)%256      ,    color%256      ,  TRANSPARENCY_OF_STARS_WHILE_DRAGGING     );
+
+			float rotationOffset = 360 * rotation + x + y + twinkle;
+			float outerx = sin((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength ;
+			float outery = cos((((i/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * outerLength;
+			float innerx1 = sin(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innery1 = cos(((((i+.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innerx2 = sin(((((i-.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			float innery2 = cos(((((i-.5)/points) * 360.0 + rotationOffset) * DEG_TO_RAD)) * innerLength;
+			ofTriangle(x, y, x+innerx1, y+innery1, x+outerx, y+outery);
+			ofTriangle(x, y, x+innerx2, y+innery2, x+outerx, y+outery);
+			//			ofLine(x+innerx1, y+innery1, x+outerx, y+outery);
+			//			ofLine(x+innerx2, y+innery2, x+outerx, y+outery);
+			ofDisableAlphaBlending();
+		}
+		
 	}
 	ofDisableAlphaBlending();
 

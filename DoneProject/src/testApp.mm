@@ -86,7 +86,7 @@ void testApp::setup(){
 	// 4 num buffers (latency)
 	ofSoundStreamSetup(NUM_CHANNELS, NUM_CHANNELS, this, sampleRate, initialBufferSize, 4);
 	ofSetFrameRate(60);
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
 	allThingsPath = [[documentsDirectory stringByAppendingPathComponent:@"allThings.keys"] retain];

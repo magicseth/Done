@@ -21,6 +21,21 @@
 		if (!_allStars) {
 			_allStars = [[NSMutableArray alloc] init];
 		}
+		NSArray * starCopy = [_allStars copy];
+		NSFileManager * fm = [NSFileManager defaultManager];
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+		NSString *documentsDirectory = [paths objectAtIndex:0];
+		if (![fm fileExistsAtPath:[path stringByDeletingLastPathComponent]]) {
+			NSLog(@"hi");
+			[fm createDirectoryAtPath:[path stringByDeletingLastPathComponent] attributes:nil];
+		}
+		
+		for (Star * star in starCopy) {
+			
+			if (![fm fileExistsAtPath:[documentsDirectory stringByAppendingPathComponent:star.filename]]) {
+				[_allStars removeObject:star];
+			}
+		}
 	}
 	return self;
 }

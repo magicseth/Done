@@ -383,6 +383,7 @@ void testApp::draw(){
 	int counter;
 	int valsInOnePixel = ((float)volumeBufferWidth)/((float)ofGetWidth());
 	volumeBufferReadIndex = volumeBufferWriteIndex;
+	volumeBufferReadIndex = volumeBufferReadIndex - (volumeBufferReadIndex % valsInOnePixel);
 	for(int j=0;j<ofGetWidth(); j++)
 	{
 		aveVol=0;

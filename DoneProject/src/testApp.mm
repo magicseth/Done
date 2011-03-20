@@ -476,16 +476,17 @@ void testApp::draw(){
 	int startX = 100;
 	startX = 320 - (recordingDuration / (DURATION_OF_CIRCULAR_BUFFER *1.0) *320);
 
-	
-	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
-	ofSetColor(0x666666);
-	ofLine(startX, 80, startX, 20);
-	ofDrawBitmapString(seconds, startX + 2, 75);
-	ofEnableAlphaBlending();
-	ofSetColor(0,100,100,90);
-	ofRect(startX, 20, ofGetWidth()-startX, 60);
-	ofDisableAlphaBlending();
-	
+
+//	// Draw selected time
+//	const char * seconds = [[NSString stringWithFormat:@"%ds", recordingDuration] cStringUsingEncoding:NSUTF8StringEncoding];
+//	ofSetColor(0x666666);
+//	ofLine(startX, 80, startX, 20);
+//	ofDrawBitmapString(seconds, startX + 2, 75);
+//	ofEnableAlphaBlending();
+//	ofSetColor(0,100,100,90);
+//	ofRect(startX, 20, ofGetWidth()-startX, 60);
+//	ofDisableAlphaBlending();
+//	
 	
 //	ofEnableAlphaBlending();
 //	ofSetColor(255,0,0,80);   // red, 50% transparent

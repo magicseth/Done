@@ -60,6 +60,7 @@ void testApp::setup(){
 	volumeBufferWidth   = (DURATION_OF_CIRCULAR_BUFFER*((float)sampleRate/(float)initialBufferSize))+1;
 	volumeBuffer		= new float[volumeBufferWidth];	
 	screenVisBuffer     = new float[ofGetWidth()];
+	memset(screenVisBuffer, 0, ofGetWidth() * sizeof(float));
 	awesomeBuffer		= new float[circBufferSize];	
 	memset(circularBuffer, 0, circBufferSize * sizeof(float));
 

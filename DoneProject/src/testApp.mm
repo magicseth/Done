@@ -148,6 +148,63 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 	ofEndShape(false);
 	ofFill();
 }
+
+void testApp::drawAllStars(NSArray * stars)
+{
+	int	i = 0;
+	float lastx = 0;
+	float lasty = 0;
+	for (Star * star in stars) {
+		i++;
+		float x = star.point.x;
+		float y = star.point.y;
+		int color = [star color];
+		color = 0x555555;
+		ofSetColor(color);
+		
+		if (lastx && lasty && i != 7) {
+			//			ofSetColor(0xFFFFFF);
+			
+			ofLine(lastx, lasty, x, y);
+		}
+		lastx = x;
+		lasty = y;		
+		
+	}
+	i=0;
+	for (Star * star in allThings) {
+		int color = [star color];
+		if (!color) {
+			[star setColor:[StarManager randomColor]];
+			color = [star color];
+		}
+		if (0 && star == touchedStar) {
+			ofSetColor(0xFFFF00);
+		} else {
+			ofSetColor(color);
+		}
+		
+		
+		float x = star.point.x;
+		float y = star.point.y;
+		CGRect selection = CGRectMake(selectStart.x, selectStart.y, selectEnd.x - selectStart.x, selectEnd.y - selectStart.y);
+		if (selecting & CGRectContainsPoint(selection, CGPointMake(x, y))) {
+			ofSetColor(0, 0, 0);
+		} else {
+			ofSetColor(color);
+		}
+		
+		if(star==touchedStar)
+		{
+			drawStar(x,y,true, color);
+		}
+		else
+		{
+			drawStar(x,y,false, color);
+		}
+		i++;
+	}
+}
 void testApp::drawStar(float x, float y, boolean_t this_star_dragged, uint32_t color)
 {
 	int star_size;
@@ -396,62 +453,6 @@ void testApp::draw(){
 ////		ofLine(xvalue, 100, xvalue, -yvalue);
 ////		
 ////	}
-	int	i = 0;
-	float lastx = 0;
-	float lasty = 0;
-	for (Star * star in allThings) {
-		i++;
-		float x = star.point.x;
-		float y = star.point.y;
-		int color = [star color];
-		color = 0x555555;
-		ofSetColor(color);
-
-		if (lastx && lasty && i != 7) {
-			//			ofSetColor(0xFFFFFF);
-			
-			ofLine(lastx, lasty, x, y);
-		}
-		lastx = x;
-		lasty = y;		
-
-	}
-	i=0;
-	
-	for (Star * star in allThings) {
-		int color = [star color];
-		if (!color) {
-			[star setColor:[StarManager randomColor]];
-			color = [star color];
-		}
-		if (0 && star == touchedStar) {
-			ofSetColor(0xFFFF00);
-		} else {
-			ofSetColor(color);
-		}
-		
-		
-		float x = star.point.x;
-		float y = star.point.y;
-		CGRect selection = CGRectMake(selectStart.x, selectStart.y, selectEnd.x - selectStart.x, selectEnd.y - selectStart.y);
-		if (selecting & CGRectContainsPoint(selection, CGPointMake(x, y))) {
-			ofSetColor(0, 0, 0);
-		} else {
-			ofSetColor(color);
-		}
-		
-		if(star==touchedStar)
-		{
-			drawStar(x,y,true, color);
-		}
-		else
-		{
-			drawStar(x,y,false, color);
-		}
-		
-		i++;
-	}
-	
 	
 	ofSetColor(0x333333);
 	drawCounter++;
@@ -508,6 +509,7 @@ void testApp::draw(){
 	drawWave(height, speed, period);
 	}
 
+	drawAllStars(allThings);
 	
 }
 

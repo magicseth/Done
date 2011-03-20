@@ -41,6 +41,7 @@ public:
 	void audioAvailable();
 
 	void drawWave(float height, float speed, float period);
+	void drawAllStars(NSArray * stars);
 	float getVolume();
 	void setVolume(float volume);
 	void drawJaySound();

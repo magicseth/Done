@@ -34,6 +34,8 @@
 		64BBCFDE12E6A93500355A69 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFDA12E6A93500355A69 /* CAXException.cpp */; };
 		64BBCFE412E6A93E00355A69 /* AQPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFE012E6A93E00355A69 /* AQPlayer.mm */; };
 		64BBCFE512E6A93E00355A69 /* AQRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BBCFE112E6A93E00355A69 /* AQRecorder.mm */; };
+		64FE626F1335F0C0007F0201 /* verdana.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64FE626E1335F0C0007F0201 /* verdana.ttf */; };
+		64FE629F1335F5C1007F0201 /* HelveticaLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64FE629E1335F5C1007F0201 /* HelveticaLight.ttf */; };
 		BB16EBD20F2B2A9500518274 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB16EBD10F2B2A9500518274 /* OpenGLES.framework */; };
 		BB16EBD90F2B2AB500518274 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB16EBD80F2B2AB500518274 /* QuartzCore.framework */; };
 		BB24DD8F10DA77E000E9C588 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BB24DD8C10DA77E000E9C588 /* Default.png */; };
@@ -108,6 +110,8 @@
 		64BBCFE112E6A93E00355A69 /* AQRecorder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AQRecorder.mm; sourceTree = "<group>"; };
 		64BBCFE212E6A93E00355A69 /* AQRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AQRecorder.h; sourceTree = "<group>"; };
 		64BBCFE312E6A93E00355A69 /* AQPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AQPlayer.h; sourceTree = "<group>"; };
+		64FE626E1335F0C0007F0201 /* verdana.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = verdana.ttf; sourceTree = "<group>"; };
+		64FE629E1335F5C1007F0201 /* HelveticaLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HelveticaLight.ttf; sourceTree = "<group>"; };
 		BB16EBD10F2B2A9500518274 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BB16EBD80F2B2AB500518274 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BB24DD8C10DA77E000E9C588 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -355,6 +359,8 @@
 		BB24DD8B10DA77E000E9C588 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				64FE629E1335F5C1007F0201 /* HelveticaLight.ttf */,
+				64FE626E1335F0C0007F0201 /* verdana.ttf */,
 				BB24DD8C10DA77E000E9C588 /* Default.png */,
 				BB24DD8D10DA77E000E9C588 /* Icon.png */,
 			);
@@ -677,6 +683,8 @@
 				BB24DD8F10DA77E000E9C588 /* Default.png in Resources */,
 				BB24DD9010DA77E000E9C588 /* Icon.png in Resources */,
 				BB24DDCA10DA781C00E9C588 /* ofxiphone-Info.plist in Resources */,
+				64FE626F1335F0C0007F0201 /* verdana.ttf in Resources */,
+				64FE629F1335F5C1007F0201 /* HelveticaLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

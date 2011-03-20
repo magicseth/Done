@@ -25,6 +25,8 @@ int volumeBufferReadIndex;
 #define NUM_CHANNELS 1
 //--------------------------------------------------------------
 void testApp::setup(){	
+	
+	font.loadFont("HelveticaLight.ttf", 10);
 	volumeBufferWriteIndex = 0;
 	volumeBufferWriteIndex = 0;
 	starAnimationStep = 1.0; // make stars grow and shrink
@@ -152,6 +154,13 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 
 void testApp::drawAllStars(NSArray * stars)
 {
+	char * title = "Orion";
+	ofRectangle rect = font.getStringBoundingBox(title, 0,0);
+	// this is the actual midpt (x + w/2, y + h/2);
+	float centerx = rect.x + rect.width / 2;
+	float centery = rect.y + rect.height / 2;
+	ofSetColor(0xFFFFFF);
+	font.drawString(title, ofGetWidth()/2 + centerx, 40 + centery);
 	int	i = 0;
 	float lastx = 0;
 	float lasty = 0;

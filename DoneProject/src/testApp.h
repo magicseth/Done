@@ -83,6 +83,8 @@ public:
 	CGPoint selectStart;
 	CGPoint selectEnd;
 	
+	ofTrueTypeFont font;
+	
 	BOOL simulator;
 	
 	NSObject * invis;

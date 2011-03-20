@@ -266,7 +266,7 @@ void testApp::drawStar(float x, float y, boolean_t this_star_dragged, uint32_t c
 		// Filled Polygon
 //		int twinkle = arc4random() %5;
 		int max_twinkle = 60;
-		int twinkle = (int)(drawCounter * .05 + x) %max_twinkle;
+		float twinkle = (drawCounter * .05 + x);
 		if (twinkle > max_twinkle/2) {
 			twinkle = max_twinkle-twinkle;
 		}

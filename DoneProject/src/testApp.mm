@@ -367,7 +367,7 @@ void testApp::draw(){
 	
 	ofTranslate(0, 0, 0);
 	// draw the input:
-	ofSetColor(0x000000);
+	ofSetColor(0x000020);
 	ofRect(0,0,360,480);
 	
 	if (selecting) {

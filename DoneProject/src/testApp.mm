@@ -141,8 +141,8 @@ void testApp::drawWave(float height = 20, float speed = 0.1f, float period = 0.0
 	
 	int spacing = 30;
 	ofBeginShape();
-	float yoffset = 50;//ofGetHeight()/2.0;
-	for(int x=-spacing; x<=ofGetWidth() +spacing; x+= spacing) {
+	float yoffset =ofGetHeight() - 50;
+	for(int x=-spacing; x<=ofGetWidth() + 2*spacing; x+= spacing) {
 		ofCurveVertex(x, yoffset  + height * sin(x*period + ofGetFrameNum() * speed));
 	}
 	ofEndShape(false);
@@ -339,7 +339,7 @@ float testApp::stepWise(float ave){
 	return ave;
 }
 void testApp::drawJaySound(){
-	float yValue = 50; // y value at which the sound file is centered vertically
+	float yValue = ofGetHeight() - 50; // y value at which the sound file is centered vertically
 	
 	int circIndex;
 	int theEnd=300;

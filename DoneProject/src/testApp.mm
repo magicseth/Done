@@ -406,15 +406,6 @@ void testApp::draw(){
 		screenVisBuffer[j] = aveVol/counter;
 	}
 	float radius=0;
-	for(int j=0;j<ofGetWidth(); j++)
-	{
-		radius = screenVisBuffer[j]*200;
-		if (radius>10){radius=10;}
-		// This offset gives each sample an offset that will stay with it as time moves
-		int offset = (j + volumeBufferWriteIndex / valsInOnePixel) % 10;
-		ofCircle(j, ofGetHeight() - 50 - offset, radius);
-	}
-	
 	
 
 //	drawJaySound();
@@ -520,8 +511,31 @@ void testApp::draw(){
 	period = 0.02*2;
 	if(!SUPPRESS_WAVE)
 	{
-	drawWave(height, speed, period);
+//	drawWave(height, speed, period);
 	}
+	
+	
+	ofEnableAlphaBlending();
+	ofSetLineWidth(4);
+
+	mult = mult*mult;
+	for(int j=0;j<ofGetWidth(); j++)
+	{
+		radius = screenVisBuffer[j]*200;
+		if (radius>10){radius=10;}
+		// This offset gives each sample an offset that will stay with it as time moves
+		int offset = (j + volumeBufferWriteIndex / valsInOnePixel) % 10;
+		//		ofCircle(j, ofGetHeight() - 50 - offset, radius);
+		int blackness = radius *20;
+		ofSetColor(0,0,32, 189-blackness);
+		ofSetColor(255,255,255, blackness);
+//		ofLine(j, ofGetHeight(), j, ofGetHeight()-100);
+		float yoffset = sin(j/100.0) * 20;
+		ofLine(j, ofGetHeight()-50-mult +yoffset, j, ofGetHeight()-50+mult + yoffset);
+	}
+	ofSetLineWidth(1);
+
+	ofDisableAlphaBlending();
 
 	if (showAllConstellations) {
 		ofScale(.3, .3, .3);

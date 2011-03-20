@@ -399,7 +399,9 @@ void testApp::draw(){
 	{
 		radius = screenVisBuffer[j]*200;
 		if (radius>10){radius=10;}
-		ofCircle(j, 50, radius);
+		// This offset gives each sample an offset that will stay with it as time moves
+		int offset = (j + volumeBufferWriteIndex / valsInOnePixel) % 10;
+		ofCircle(j, ofGetHeight() - 50 - offset, radius);
 	}
 	
 	

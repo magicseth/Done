@@ -523,7 +523,27 @@ void testApp::draw(){
 	drawWave(height, speed, period);
 	}
 
+	if (showAllConstellations) {
+		ofScale(.3, .3, .3);
+		drawAllStars(allThings);
+		ofTranslate(ofGetWidth(),0, 0);
+		drawAllStars(allThings);
+		ofTranslate(ofGetWidth(),0, 0);
+		drawAllStars(allThings);
+		ofTranslate(0,ofGetHeight(), 0);
+		drawAllStars(allThings);
+		ofTranslate(-ofGetWidth(),0, 0);
+		drawAllStars(allThings);
+		ofTranslate(-ofGetWidth(),0, 0);
+		drawAllStars(allThings);
+		ofTranslate(0,ofGetHeight(), 0);
+		drawAllStars(allThings);
+		ofTranslate(ofGetWidth(),0, 0);
+		drawAllStars(allThings);
+		ofTranslate(ofGetWidth(),0, 0);
+	}
 	drawAllStars(allThings);
+	
 	
 }
 
@@ -687,6 +707,10 @@ Star * testApp::whichStar(float tx, float ty)
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs &touch){
 	
+	if (touch.id == 1) {
+		NSLog(@"Double down");
+		showAllConstellations = !showAllConstellations;
+	}
 	drawBig=true;
 	int sampleLength;
 	// This code shrinks our sampleLength if we haven't yet recorded enough

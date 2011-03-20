@@ -92,6 +92,7 @@ public:
 bool playingOldSound;
 	BOOL wehaveagoodaudiosession;
 
-};
+	BOOL showAllConstellations;
 
+};
 
